@@ -156,7 +156,7 @@ reportgenerator \
 | ID     | Endpoint              | Descripción                                                                                                                                                | Severidad | Estado        |
 | ------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------- |
 | DEF-01 | `POST /auth/register` | Username omitido retornaba HTTP 201 en lugar de 400 — `RegisterRequest` era un positional record; el model binder asignaba `null` sin activar `[Required]` | Alta      | **Corregido** |
-| DEF-02 | `GET /auth/validate`  | Token revocado post-logout sigue siendo aceptado — `ctx.Fail()` en `OnTokenValidated` no garantiza corte del pipeline                                      | Alta      | Abierto       |
+| DEF-02 | `GET /auth/validate`  | Token revocado post-logout sigue siendo aceptado — `ctx.Fail()` en `OnTokenValidated` no garantiza corte del pipeline. Corregido con middleware inline entre `UseAuthentication()` y `UseAuthorization()` | Alta      | **Corregido** |
 
 ---
 

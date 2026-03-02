@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,29 +82,21 @@ builder
 
         opt.Events = new JwtBearerEvents
         {
-            // Single handler: inject ECDSA public key + enforce blacklist
-            OnTokenValidated = async ctx =>
+            // Inject the ECDSA public key so the middleware can verify the
+            // ES256 signature. Blacklist enforcement is intentionally NOT done
+            // here: OnTokenValidated fires before HttpContext.User is set, so
+            // ctx.Fail() does not reliably produce HTTP 401 in all handler
+            // versions. The blacklist check is handled by a dedicated middleware
+            // placed after UseAuthentication() — see below.
+            OnTokenValidated = ctx =>
             {
                 var keyProvider =
                     ctx.HttpContext.RequestServices.GetRequiredService<EcdsaKeyProvider>();
-                var blacklist =
-                    ctx.HttpContext.RequestServices.GetRequiredService<TokenBlacklist>();
 
-                // Ensure the public key is set for subsequent validations
                 ctx.Options.TokenValidationParameters.IssuerSigningKey =
                     keyProvider.PublicSecurityKey;
 
-                // Reject revoked tokens (jti in blacklist → logout was called)
-                var jti = ctx
-                    .Principal?.FindFirst(
-                        System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti
-                    )
-                    ?.Value;
-
-                if (jti is not null && blacklist.IsRevoked(jti))
-                    ctx.Fail("Token has been revoked.");
-
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             },
         };
     });
@@ -152,6 +146,30 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+
+// ── Blacklist enforcement (DEF-02 fix) ────────────────────────────────────────
+// Runs AFTER UseAuthentication() has built HttpContext.User from the JWT,
+// but BEFORE UseAuthorization() grants access to [Authorize] endpoints.
+// This guarantees that a revoked token (jti in blacklist) is always rejected
+// with HTTP 401, regardless of the JWT handler's internal event ordering.
+app.Use(async (ctx, next) =>
+{
+    if (ctx.User.Identity?.IsAuthenticated == true)
+    {
+        var jti = ctx.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        var blacklist = ctx.RequestServices.GetRequiredService<TokenBlacklist>();
+
+        if (jti is not null && blacklist.IsRevoked(jti))
+        {
+            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await ctx.Response.WriteAsJsonAsync(
+                new ErrorResponse("TOKEN_REVOKED", "Token has been revoked."));
+            return;
+        }
+    }
+    await next();
+});
+
 app.UseAuthorization();
 app.MapControllers();
 

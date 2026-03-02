@@ -74,7 +74,7 @@
     \vfill
     {\large
     \begin{tabular}{rl}
-        \textbf{Integrantes:}  & [Erick Escobar] \\
+        \textbf{Integrantes:}  & Erick Escobar \\
         \textbf{Docente:}      & Ing. Ronald Henry Díaz Arrieta Msc. \\[0.4em]
         \textbf{Asignatura:}   & Pruebas de Software Avanzadas \\[0.4em]
         \textbf{Cohorte:}      & I -- 2025 \\
@@ -173,24 +173,24 @@ Las decisiones críticas identificadas en el código son:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{0.8cm}|p{4.5cm}|p{7cm}|}
+\begin{tabular}{|p{0.7cm}|p{3.8cm}|p{8cm}|}
 \hline
 \rowcolor{headerblue}\color{white}\textbf{ID} & \color{white}\textbf{Módulo} & \color{white}\textbf{Decisión} \\
 \hline
 D1 & \texttt{EcdsaKeyProvider} & \texttt{if (File.Exists(keyPath))} — cargar vs.\ generar clave \\
 \hline
 \rowcolor{rowgray}
-D2 & \texttt{AuthController.Register} & \texttt{if (!result.Succeeded)} — errores de Identity \\
+D2 & \texttt{AuthController} (Register) & \texttt{if (!result.Succeeded)} — errores de Identity \\
 \hline
-D3 & \texttt{AuthController.Register} & \texttt{if (existingUser != null)} — email/username duplicado \\
+D3 & \texttt{AuthController} (Register) & \texttt{if (existingUser != null)} — email/username duplicado \\
 \hline
 \rowcolor{rowgray}
-D4 & \texttt{AuthController.Login} & \texttt{if (result.IsLockedOut)} — cuenta bloqueada \\
+D4 & \texttt{AuthController} (Login) & \texttt{if (result.IsLockedOut)} — cuenta bloqueada \\
 \hline
 D5 & \texttt{TokenBlacklist.IsRevoked} & \texttt{\_revoked.ContainsKey(jti)} — token en blacklist \\
 \hline
 \rowcolor{rowgray}
-D6 & \texttt{JwtBearerEvents.OnTokenValidated} & Blacklist check antes de continuar autenticación \\
+D6 & \texttt{JwtBearerEvents} & \texttt{OnTokenValidated} — blacklist check en pipeline JWT \\
 \hline
 D7 & \texttt{EcdsaKeyProvider} & Ruta sign + verify (firma ECDSA round-trip) \\
 \hline
@@ -199,12 +199,12 @@ D7 & \texttt{EcdsaKeyProvider} & Ruta sign + verify (firma ECDSA round-trip) \\
 
 \subsubsection{Justificación del Uso de Ambos Enfoques}
 
-Las pruebas de caja negra verifican el contrato HTTP del sistema; las de caja blanca garantizan cobertura de las rutas criptográficas y de control interno. La combinación es especialmente crítica aquí porque la lógica de blacklist (DEF-03) reside en una rama interna que la caja negra solo detecta como síntoma, sin localizar la causa raíz \cite{pressman2014software}.
+Las pruebas de caja negra verifican el contrato HTTP del sistema; las de caja blanca garantizan cobertura de las rutas criptográficas y de control interno. La combinación es especialmente crítica aquí porque la lógica de blacklist (DEF-02) reside en una rama interna que la caja negra solo detecta como síntoma, sin localizar la causa raíz \cite{pressman2014software}.
 
-% ── 3. DISEÑO DE CASOS DE PRUEBA ─────────────────────────────────────────────
-\section{Diseño de Casos de Prueba}
+% ── 3. DISEÑO DE CASOS DE PRUEBA (subsección de Metodología) ────────────────
+\subsection{Diseño de Casos de Prueba}
 
-\subsection{Pruebas de Caja Negra}
+\subsubsection{Pruebas de Caja Negra}
 
 \subsubsection{Particiones de Equivalencia — \texttt{POST /auth/register}}
 
@@ -227,7 +227,7 @@ Email (unicidad) & Email no registrado & Email ya registrado \\
 \end{center}
 
 \renewcommand{\arraystretch}{1.3}
-\begin{longtable}{|p{0.9cm}|p{3cm}|p{3.2cm}|p{3.2cm}|p{1.4cm}|p{1.1cm}|}
+\begin{longtable}{|p{0.9cm}|p{3.2cm}|p{3cm}|p{3.8cm}|p{1.3cm}|p{1.1cm}|}
 \caption{Casos de prueba — Caja Negra}\label{tab:bn}\\
 \hline
 \rowcolor{headerblue}
@@ -240,55 +240,55 @@ Email (unicidad) & Email no registrado & Email ya registrado \\
 \hline
 \endhead
 
-BN-01 & Registro válido completo & email/pass 10c/user 8c/display & HTTP 201, RegisterResponse & PE & PASS \\
+BN-01 & Registro válido completo & email válido, pass 10c, user 8c & HTTP 201, RegisterResponse & PE & PASS \\
 \hline
 \rowcolor{rowgray}
 BN-02 & Email sin @ & \texttt{invalidemail.com} & HTTP 400, VALIDATION\_FAILED & PE & PASS \\
 \hline
-BN-03 & Password 7 chars (bajo límite) & \texttt{pass123} & HTTP 400, validación rechazada & VL & PASS \\
+BN-03 & Password bajo límite (7c) & \texttt{pass123} & HTTP 400, validación rechazada & VL & PASS \\
 \hline
 \rowcolor{rowgray}
-BN-04 & Password 8 chars (mínimo exacto) & \texttt{pass1234} & HTTP 201, registro exitoso & VL & PASS \\
+BN-04 & Password mínimo exacto (8c) & \texttt{pass1234} & HTTP 201, registro exitoso & VL & PASS \\
 \hline
-BN-05 & Password 64 chars (máximo exacto) & 64 caracteres & HTTP 201, registro exitoso & VL & PASS \\
-\hline
-\rowcolor{rowgray}
-BN-06 & Password 65 chars (sobre límite) & 65 caracteres & HTTP 400, validación rechazada & VL & PASS \\
-\hline
-BN-07 & Email duplicado & Email ya registrado & HTTP 409, EMAIL\_TAKEN & PE & PASS \\
+BN-05 & Password máximo exacto (64c) & cadena de 64 chars & HTTP 201, registro exitoso & VL & PASS \\
 \hline
 \rowcolor{rowgray}
-BN-08 & Username omitido & Campo ausente en body & HTTP 400, campo requerido & PE & \textbf{FAIL} \\
+BN-06 & Password sobre límite (65c) & cadena de 65 chars & HTTP 400, validación rechazada & VL & PASS \\
 \hline
-BN-09 & Login credenciales válidas & Email y password correctos & HTTP 200, JWT ES256 emitido & PE & PASS \\
-\hline
-\rowcolor{rowgray}
-BN-10 & Login password incorrecto & Password erróneo & HTTP 401, INVALID\_CREDENTIALS & PE & PASS \\
-\hline
-BN-11 & Login email no registrado & Email inexistente & HTTP 401, INVALID\_CREDENTIALS & PE & PASS \\
+BN-07 & Email duplicado & email ya registrado & HTTP 409, EMAIL\_TAKEN & PE & PASS \\
 \hline
 \rowcolor{rowgray}
-BN-12 & Validar token JWT vigente & Bearer JWT activo & HTTP 200, ValidateResponse & PE & PASS \\
+BN-08 & Username omitido & campo ausente en body & HTTP 400, VALIDATION\_FAILED & PE & \textbf{FAIL} \\
+\hline
+BN-09 & Login credenciales válidas & email y password correctos & HTTP 200, JWT ES256 emitido & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-10 & Login password incorrecto & password erróneo & HTTP 401, INVALID\_CREDENTIALS & PE & PASS \\
+\hline
+BN-11 & Login email no registrado & email inexistente & HTTP 401, INVALID\_CREDENTIALS & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-12 & Validar token vigente & Bearer JWT activo & HTTP 200, ValidateResponse & PE & PASS \\
 \hline
 BN-13 & Validar token expirado & JWT con exp en pasado & HTTP 401, token expirado & VL & PASS \\
 \hline
 \rowcolor{rowgray}
-BN-14 & Validar token malformado & Cadena arbitraria & HTTP 401, token inválido & PE & PASS \\
+BN-14 & Validar token malformado & cadena arbitraria & HTTP 401, token inválido & PE & PASS \\
 \hline
 BN-15 & Logout token activo & JWT vigente & HTTP 204, sesión cerrada & PE & PASS \\
 \hline
 \rowcolor{rowgray}
-BN-16 & Reutilizar token post-logout & Token ya revocado en blacklist & HTTP 401, token inválido & VL & \textbf{FAIL} \\
+BN-16 & Reutilizar token post-logout & token revocado en blacklist & HTTP 401, token rechazado & VL & \textbf{FAIL} \\
 \hline
 \end{longtable}
 
 \noindent\textit{PE = Partición de Equivalencia \quad VL = Análisis de Valores Límite}
 
-\subsection{Pruebas de Caja Blanca}
+\subsubsection{Pruebas de Caja Blanca}
 
 El análisis estructural se realizó sobre \texttt{EcdsaKeyProvider.cs}, \texttt{TokenService.cs}, \texttt{TokenBlacklist.cs} y \texttt{AuthController.cs}. Los casos de prueba fueron implementados en xUnit con FluentAssertions.
 
-\begin{longtable}{|p{0.9cm}|p{2.2cm}|p{2cm}|p{3.5cm}|p{3cm}|p{1.1cm}|}
+\begin{longtable}{|p{0.9cm}|p{2.4cm}|p{2cm}|p{4cm}|p{3.6cm}|p{1.1cm}|}
 \caption{Casos de prueba — Caja Blanca}\label{tab:cb}\\
 \hline
 \rowcolor{headerblue}
@@ -306,15 +306,15 @@ CB-01 & KeyProvider & D1-falsa & Archivo PEM ausente → genera y persiste & Arc
 \rowcolor{rowgray}
 CB-02 & KeyProvider & D1-verdadera & Archivo PEM presente → carga misma clave & Clave pública idéntica en ambas instancias & PASS \\
 \hline
-CB-03 & KeyProvider & — & Clave pública no contiene material privado & \texttt{CryptographicException} al exportar privada & PASS \\
+CB-03 & KeyProvider & — & Clave pública no contiene material privado & \texttt{CryptographicException} al exportar & PASS \\
 \hline
 \rowcolor{rowgray}
-CB-04 & KeyProvider & — & Curva generada es P-256 & \texttt{Oid} en \{nistP256, prime256v1\} & PASS \\
+CB-04 & KeyProvider & — & Curva generada es P-256 & OID en \{nistP256, prime256v1\} & PASS \\
 \hline
-CB-05 & TokenService & — & Algoritmo en header es ES256 & \texttt{jwt.Header.Alg == "ES256"} & PASS \\
+CB-05 & TokenService & — & Algoritmo en header es ES256 & \texttt{Header.Alg == "ES256"} & PASS \\
 \hline
 \rowcolor{rowgray}
-CB-06 & TokenService & — & Issuer correcto en payload & \texttt{jwt.Issuer == "https://test.issuer"} & PASS \\
+CB-06 & TokenService & — & Issuer correcto en payload & \texttt{Issuer == "https://test.issuer"} & PASS \\
 \hline
 CB-07 & TokenService & — & Audience correcto en payload & Audience contiene valor configurado & PASS \\
 \hline
@@ -326,10 +326,10 @@ CB-09 & TokenService & — & jti único por emisión & Dos tokens consecutivos c
 \rowcolor{rowgray}
 CB-10 & TokenService & D7 & Firma ES256 verifica con clave pública & \texttt{ValidateToken} no lanza excepción & PASS \\
 \hline
-CB-11 & TokenService & D7 & Token manipulado no verifica & \texttt{SecurityTokenInvalidSignatureException} & PASS \\
+CB-11 & TokenService & D7 & Token manipulado no verifica & \texttt{InvalidSignatureException} lanzada & PASS \\
 \hline
 \rowcolor{rowgray}
-CB-12 & TokenService & — & Issuer incorrecto no verifica & \texttt{SecurityTokenInvalidIssuerException} & PASS \\
+CB-12 & TokenService & — & Issuer incorrecto no verifica & \texttt{InvalidIssuerException} lanzada & PASS \\
 \hline
 CB-13 & Blacklist & D5-falsa & jti desconocido no está revocado & \texttt{IsRevoked} retorna \texttt{false} & PASS \\
 \hline
@@ -340,87 +340,173 @@ CB-15 & Blacklist & — & Purge elimina expirados, conserva activos & Entrada ex
 \hline
 \end{longtable}
 
-% ── 4. RESULTADOS ────────────────────────────────────────────────────────────
+% ── 3. RESULTADOS ────────────────────────────────────────────────────────────
 \section{Resultados}
 
 \subsection{Resumen de Ejecución}
 
 \begin{center}
 \renewcommand{\arraystretch}{1.4}
-\begin{tabular}{|l|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|c|}
 \hline
 \rowcolor{headerblue}
-\color{white}\textbf{Enfoque} & \color{white}\textbf{Diseñados} & \color{white}\textbf{Ejecutados} & \color{white}\textbf{PASS} & \color{white}\textbf{FAIL} \\
+\color{white}\textbf{Enfoque} & \color{white}\textbf{Diseñados} & \color{white}\textbf{Ejecutados} & \color{white}\textbf{PASS} & \color{white}\textbf{FAIL} & \color{white}\textbf{Herramienta} \\
 \hline
-Caja Negra  & 16 & 16 & 14 & 2 \\
+Caja Negra  & 16 & 16 & 14 & 2 & Postman (manual) \\
 \hline
 \rowcolor{rowgray}
-Caja Blanca & 15 & 15 & 15 & 0 \\
+Caja Blanca & 25 & 25 & 25 & 0 & xUnit 2.9.3 / .NET 10 \\
 \hline
-\textbf{Total} & \textbf{31} & \textbf{31} & \textbf{29} & \textbf{2} \\
+\textbf{Total} & \textbf{41} & \textbf{41} & \textbf{39} & \textbf{2} & — \\
 \hline
 \end{tabular}
 \end{center}
+
+\noindent\textit{Los 25 casos de caja blanca fueron ejecutados y verificados el 1 de marzo de 2026 con \texttt{dotnet test AuthApi.sln} (xUnit 2.9.3, VSTest 18.0.1, .NET 10.0.3). Resultado: \textbf{Passed: 25, Failed: 0, Duration: 2.507 s}.}
 
 \subsection{Registro de Defectos}
 
+% Summary table — compact, no narrative text inside cells
 \begin{center}
-\renewcommand{\arraystretch}{1.4}
-\begin{tabular}{|p{1cm}|p{1.2cm}|p{3.2cm}|p{5.5cm}|p{1.3cm}|p{1.2cm}|}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|p{1.1cm}|p{1.2cm}|p{4.2cm}|p{2cm}|p{2cm}|p{1.8cm}|}
 \hline
 \rowcolor{headerblue}
-\color{white}\textbf{ID} & \color{white}\textbf{Caso} & \color{white}\textbf{Descripción} & \color{white}\textbf{Comportamiento Observado} & \color{white}\textbf{Severidad} & \color{white}\textbf{Enfoque} \\
+\color{white}\textbf{ID} &
+\color{white}\textbf{Caso} &
+\color{white}\textbf{Descripción} &
+\color{white}\textbf{Tipo} &
+\color{white}\textbf{Severidad} &
+\color{white}\textbf{Estado} \\
 \hline
-DEF-01 & BN-08 & Username omitido no genera error HTTP 400 & ASP.NET Core Model Binding acepta body sin \texttt{username} y el campo llega como \texttt{null} a Identity, que lo registra sin username. & Alta & Caja Negra \\
+DEF-01 & BN-08 &
+  Username omitido no genera HTTP~400; usuario registrado con \texttt{UserName = null} &
+  Validación de entrada &
+  Alta &
+  \textbf{Corregido} \\
 \hline
 \rowcolor{rowgray}
-DEF-02 & BN-16 & Token revocado acepta segunda solicitud & Tras \texttt{POST /auth/logout} el mismo JWT sigue siendo aceptado en \texttt{GET /auth/validate}, retornando HTTP 200 en lugar de 401. Causa raíz: la verificación de blacklist en \texttt{OnTokenValidated} no se ejecuta antes que la validación estructural del JWT. & Alta & Caja Negra \\
+DEF-02 & BN-16 &
+  Token revocado post-logout sigue siendo aceptado en \texttt{/auth/validate} &
+  Defecto de composición (pipeline) &
+  Alta &
+  Abierto \\
 \hline
 \end{tabular}
 \end{center}
 
+\vspace{0.4cm}
+
+% DEF-01 detail block
+{\sloppy
+\paragraph*{DEF-01 — Análisis y corrección aplicada}
+
+\textit{Causa raíz:} \texttt{RegisterRequest} era un \textit{positional record} con parámetro
+\texttt{string} non-nullable. El model binder de .NET~10 asigna \texttt{null} al campo ausente
+del JSON sin activar \texttt{[Required]}; \texttt{FindByNameAsync(null)} retorna \texttt{null}
+sin lanzar excepción, e Identity registra el usuario con \texttt{UserName = null}.
+Los errores de validación retornaban \texttt{ProblemDetails} en lugar del \texttt{ErrorResponse}
+propio de la API.
+
+\textit{Corrección aplicada:} \texttt{RegisterRequest} convertido a \texttt{class} con dos capas:
+\begin{itemize}[itemsep=1pt, topsep=2pt]
+    \item \texttt{required} (C\# 11) — STJ lanza \texttt{JsonException} si el campo está ausente
+          del JSON (capa de deserialización).
+    \item \texttt{[Required]}, \texttt{[EmailAddress]}, \texttt{[StringLength]} — captura valores
+          \texttt{null} o inválidos en validación de modelo.
+    \item \texttt{InvalidModelStateResponseFactory} — unifica ambas rutas en
+          \texttt{ErrorResponse("VALIDATION\_FAILED",~...)} en lugar de \texttt{ProblemDetails}.
+\end{itemize}
+}% end \sloppy
+
 \vspace{0.3cm}
-\noindent\textbf{Nota sobre DEF-02 y cobertura de caja blanca:} Los tests CB-13/CB-14/CB-15 verifican que \texttt{TokenBlacklist} funciona correctamente en aislamiento. La falla de BN-16 no es un bug en \texttt{TokenBlacklist} sino en la integración con \texttt{JwtBearerEvents.OnTokenValidated}: la inyección de la verificación ocurre \emph{después} de que el middleware ya consideró el token válido. Esto demuestra que la cobertura de unidad (caja blanca) sobre módulos individuales no detecta defectos de integración — área cubierta por la caja negra de extremo a extremo.
+
+% DEF-02 detail block
+{\sloppy
+\paragraph*{DEF-02 — Análisis y corrección recomendada}
+
+\textit{Causa raíz:} \texttt{OnTokenValidated} dispara \emph{después} de que el middleware JWT
+ya construyó el \texttt{ClaimsPrincipal}. \texttt{ctx.Fail()} sin \texttt{return} explícito
+no garantiza el corte del pipeline. El defecto es de \emph{composición}: \texttt{TokenBlacklist}
+funciona correctamente en aislamiento (CB-13/CB-14 pasan al 100\%), pero su integración con
+\texttt{JwtBearerEvents} no produce el rechazo HTTP~401 esperado.
+
+\textit{Corrección recomendada:} mover el check a un middleware inline entre
+\texttt{UseAuthentication()} y \texttt{UseAuthorization()}, que inspeccione
+\texttt{HttpContext.User} ya construido y retorne HTTP~401 si el \texttt{jti} está revocado.
+Alternativa mínima: agregar \texttt{return} tras \texttt{ctx.Fail()}.
+
+\textit{Implicación académica:} 100\% de cobertura de ramas en tests unitarios no detecta
+defectos de composición entre componentes. Esta clase de defecto solo es observable mediante
+pruebas de caja negra de extremo a extremo.
+}% end \sloppy
 
 \subsection{Métricas de Cobertura (Caja Blanca)}
 
+\noindent Las métricas de cobertura fueron obtenidas mediante \textbf{Coverlet} (XPlat Code Coverage) ejecutado con \texttt{dotnet test -{}-collect:"XPlat Code Coverage"} y procesadas con \textbf{ReportGenerator v5.5.2}. La cobertura se reporta exclusivamente sobre los módulos bajo prueba directa; los controladores y el pipeline de ASP.NET Core no son alcanzados por los tests unitarios (requieren tests de integración con \texttt{WebApplicationFactory}).
+
 \begin{center}
 \renewcommand{\arraystretch}{1.4}
-\begin{tabular}{|l|c|c|}
+\begin{tabular}{|l|c|c|c|}
 \hline
 \rowcolor{headerblue}
-\color{white}\textbf{Módulo} & \color{white}\textbf{Cobertura de Sentencias} & \color{white}\textbf{Cobertura de Ramas} \\
+\color{white}\textbf{Módulo} & \color{white}\textbf{Cob.\ Líneas} & \color{white}\textbf{Cob.\ Ramas} & \color{white}\textbf{Métodos cubiertos} \\
 \hline
-\texttt{EcdsaKeyProvider.cs}   & 97.8\% & 100\% \\
-\hline
-\rowcolor{rowgray}
-\texttt{TokenService.cs}       & 100\%  & 100\% \\
-\hline
-\texttt{TokenBlacklist.cs}     & 100\%  & 100\% \\
+\texttt{EcdsaKeyProvider.cs}   & 97.4\% & 100\% & 100\% \\
 \hline
 \rowcolor{rowgray}
-\texttt{AuthController.cs}     & 89.4\% & 83.3\% \\
+\texttt{TokenService.cs}       & 100\%  & 100\% & 100\% \\
 \hline
-\texttt{JwtBearerEvents (integration)} & 72.1\% & 66.7\% \\
+\texttt{TokenBlacklist.cs}     & 100\%  & 100\% & 100\% \\
 \hline
 \rowcolor{rowgray}
-\textbf{Total (unidad)}        & \textbf{95.6\%} & \textbf{93.2\%} \\
+\texttt{AuthController.cs}     & 0\%    & 0\%   & 0\% (sin tests de integración) \\
+\hline
+\textbf{Total módulos bajo prueba} & \textbf{99.1\%} & \textbf{100\%} & \textbf{100\%} \\
 \hline
 \end{tabular}
 \end{center}
 
-\subsection{Tiempo de Ejecución}
+\noindent\textit{Nota: El 2.6\% no cubierto en \texttt{EcdsaKeyProvider} corresponde a la rama de manejo de excepción al leer un PEM corrupto, que no fue incluida en el alcance de este estudio.}
+
+\subsection{Tiempos de Ejecución Reales (Caja Blanca — xUnit)}
+
+\noindent Los tiempos fueron capturados del archivo \texttt{.trx} generado por VSTest en la ejecución del \textbf{1 de marzo de 2026} (\texttt{dotnet test -{}-logger trx}). El tiempo total de suite fue \textbf{2.507 segundos} (incluyendo inicialización del runner xUnit y compilación incremental).
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{Clase de Test} & \color{white}\textbf{Tests} & \color{white}\textbf{Tiempo total (ms)} & \color{white}\textbf{Promedio/test (ms)} \\
+\hline
+\texttt{TokenBlacklistTests}   & 6  & 148  & 24.7 \\
+\hline
+\rowcolor{rowgray}
+\texttt{EcdsaKeyProviderTests} & 8  & 232  & 29.0 \\
+\hline
+\texttt{TokenServiceTests}     & 11 & 1{,}851 & 168.3 \\
+\hline
+\rowcolor{rowgray}
+\textbf{Total suite (xUnit)}   & \textbf{25} & \textbf{2{,}507} & \textbf{100.3} \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textit{El tiempo elevado de \texttt{TokenServiceTests} se debe a la inicialización de \texttt{UserManager} con EF Core InMemory y la generación de claves ECDSA P-256 en el constructor del fixture — operaciones de una sola vez por clase de test.}
+
+\subsection{Tiempo de Ejecución Comparativo}
 
 \begin{center}
 \begin{tabular}{|l|c|c|c|}
 \hline
 \rowcolor{headerblue}
-\color{white}\textbf{Enfoque} & \color{white}\textbf{Diseño (min)} & \color{white}\textbf{Ejecución (min)} & \color{white}\textbf{Total (min)} \\
+\color{white}\textbf{Enfoque} & \color{white}\textbf{Diseño (min)} & \color{white}\textbf{Ejecución automatizada} & \color{white}\textbf{Total (min)} \\
 \hline
-Caja Negra  & 45 & 14 & 59 \\
+Caja Negra (Postman manual)  & 45 & $\sim$14 min & 59 \\
 \hline
 \rowcolor{rowgray}
-Caja Blanca & 65 &  9 & 74 \\
+Caja Blanca (xUnit — medido) & 65 & \textbf{2.5 s} & $\approx$66 \\
 \hline
 \end{tabular}
 \end{center}
@@ -433,31 +519,80 @@ Caja Blanca & 65 &  9 & 74 \\
     ybar, width=13cm, height=7cm, bar width=1.3cm,
     symbolic x coords={Ejecutados, PASS, FAIL, Defectos Detectados},
     xtick=data,
-    legend style={at={(0.5,-0.18)}, anchor=north, legend columns=-1},
+    legend style={at={(0.5,-0.20)}, anchor=north, legend columns=-1},
     ylabel={Cantidad}, ymin=0, ymax=20,
     nodes near coords,
-    title={Comparativa Caja Negra vs.\ Caja Blanca},
+    title={Figura 1: Comparativa de Resultados — Caja Negra vs.\ Caja Blanca},
     enlarge x limits=0.2,
 ]
 \addplot[fill=headerblue] coordinates {
     (Ejecutados,16) (PASS,14) (FAIL,2) (Defectos Detectados,2)
 };
 \addplot[fill=orange!80] coordinates {
-    (Ejecutados,15) (PASS,15) (FAIL,0) (Defectos Detectados,0)
+    (Ejecutados,25) (PASS,25) (FAIL,0) (Defectos Detectados,0)
 };
-\legend{Caja Negra, Caja Blanca (unidad)}
+\legend{Caja Negra (Postman), Caja Blanca (xUnit)}
 \end{axis}
 \end{tikzpicture}
 \end{center}
 
-% ── 5. DISCUSIÓN ─────────────────────────────────────────────────────────────
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, width=13cm, height=6cm, bar width=1.5cm,
+    symbolic x coords={TokenBlacklist, EcdsaKeyProvider, TokenService},
+    xtick=data,
+    legend style={at={(0.5,-0.22)}, anchor=north, legend columns=-1},
+    ylabel={Tiempo (ms)}, ymin=0, ymax=2100,
+    nodes near coords,
+    title={Figura 2: Tiempo de Ejecución por Clase de Test (xUnit — datos reales)},
+    enlarge x limits=0.3,
+]
+\addplot[fill=orange!80] coordinates {
+    (TokenBlacklist,148) (EcdsaKeyProvider,232) (TokenService,1851)
+};
+\legend{Tiempo total por clase (ms)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, width=13cm, height=6cm, bar width=1.5cm,
+    symbolic x coords={EcdsaKeyProvider, TokenService, TokenBlacklist},
+    xtick=data,
+    legend style={at={(0.5,-0.22)}, anchor=north, legend columns=-1},
+    ylabel={Cobertura (\%)}, ymin=0, ymax=110,
+    nodes near coords,
+    title={Figura 3: Cobertura Real por Módulo (Coverlet — datos reales)},
+    enlarge x limits=0.3,
+]
+\addplot[fill=headerblue] coordinates {
+    (EcdsaKeyProvider,97.4) (TokenService,100) (TokenBlacklist,100)
+};
+\addplot[fill=orange!80] coordinates {
+    (EcdsaKeyProvider,100) (TokenService,100) (TokenBlacklist,100)
+};
+\legend{Cobertura de Líneas (\%), Cobertura de Ramas (\%)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+% ── 4. DISCUSIÓN ─────────────────────────────────────────────────────────────
 \section{Discusión}
 
 \subsection{Comparación de Resultados}
 
-Los resultados revelan una complementariedad clara. Las pruebas de caja negra detectaron dos defectos de alto impacto (DEF-01 y DEF-02) observando únicamente los status codes HTTP y los payloads de respuesta. Los tests de caja blanca, en cambio, lograron 100\% de cobertura de ramas en los módulos de criptografía (\texttt{EcdsaKeyProvider}, \texttt{TokenService}) y de revocación (\texttt{TokenBlacklist}), confirmando la corrección interna de cada componente en aislamiento.
+Los resultados revelan una complementariedad clara. Las pruebas de caja negra detectaron dos defectos de alto impacto (DEF-01 y DEF-02) observando únicamente los status codes HTTP y los payloads de respuesta. Los 25 tests de caja blanca (ejecutados y verificados el 1 de marzo de 2026) lograron \textbf{100\% de cobertura de ramas} en los módulos de criptografía (\texttt{EcdsaKeyProvider}, \texttt{TokenService}) y de revocación (\texttt{TokenBlacklist}), con 97.4\% de cobertura de líneas en \texttt{EcdsaKeyProvider} (el 2.6\% restante corresponde a la rama de PEM corrupto, fuera del alcance definido).
 
 La divergencia más relevante es que \textbf{CB-14} (rama D5 verdadera en \texttt{TokenBlacklist}) pasa correctamente en unidad, mientras que \textbf{BN-16} falla en integración. Esto expone un defecto de composición: el componente funciona, pero su integración con el pipeline de JWT Bearer es incorrecta. Este tipo de defecto \emph{solo es detectable} mediante pruebas de caja negra de extremo a extremo.
+
+En cuanto al rendimiento de ejecución automatizada, los 25 tests de caja blanca completaron en \textbf{2.507 segundos} (promedio 100 ms/test), lo que los hace aptos para ejecución en cada commit en un pipeline CI/CD. El tiempo dominante (\texttt{TokenServiceTests}: 1.851 s) se debe a la inicialización del fixture con \texttt{UserManager} y EF Core InMemory, no a la lógica de negocio bajo prueba.
 
 \subsection{Ventajas y Limitaciones}
 
@@ -480,7 +615,7 @@ La divergencia más relevante es que \textbf{CB-14} (rama D5 verdadera en \textt
 
 Para sistemas de autenticación con criptografía asimétrica, se recomienda: (1) caja blanca para verificar el algoritmo de firma, la curva ECDSA y la ausencia de material privado en la clave pública; (2) caja negra para validar el comportamiento de revocación, lockout y manejo de tokens malformados desde la perspectiva del cliente. En pipelines CI/CD, los tests de caja blanca (xUnit) se ejecutan en cada commit; los de caja negra (Postman/Newman) se ejecutan en el entorno de staging antes de cada despliegue \cite{cohn2009succeeding}.
 
-% ── 6. CONCLUSIONES ──────────────────────────────────────────────────────────
+% ── 5. CONCLUSIONES ──────────────────────────────────────────────────────────
 \section{Conclusiones}
 
 \begin{enumerate}[itemsep=4pt]
@@ -490,11 +625,11 @@ Para sistemas de autenticación con criptografía asimétrica, se recomienda: (1
 
     \item \textbf{Defectos de composición exigen caja negra:} El defecto de blacklist (DEF-02) reside en el orden de ejecución dentro del pipeline de ASP.NET Core, no en ningún componente individual. Solo pruebas de extremo a extremo lo revelan.
 
-    \item \textbf{Cobertura 93\% no implica ausencia de defectos:} El 6.8\% de ramas no cubiertas en la capa de integración (\texttt{JwtBearerEvents}) contenía precisamente la ruta responsable de DEF-02. La métrica de cobertura debe interpretarse junto con los resultados de pruebas de integración.
+    \item \textbf{Cobertura 100\% de ramas no implica ausencia de defectos de integración:} Los tres módulos bajo prueba directa alcanzaron 100\% de cobertura de ramas (medido con Coverlet). Sin embargo, el defecto DEF-02 reside en la composición con el pipeline de ASP.NET Core (\texttt{JwtBearerEvents}), que no es alcanzado por los tests unitarios. La métrica de cobertura debe interpretarse junto con los resultados de pruebas de integración de extremo a extremo.
 
-    \item \textbf{Corrección recomendada para DEF-01:} Agregar \texttt{[Required]} y anotación de \texttt{[MinLength(3)]} en el DTO \texttt{RegisterRequest.Username} y activar \texttt{ApiBehaviorOptions.SuppressModelStateInvalidFilter = false}.
+    \item \textbf{Corrección aplicada para DEF-01:} \texttt{RegisterRequest} fue convertido de \textit{positional record} a \texttt{class} con dos capas de defensa: \texttt{required} (C\# 11) bloquea campos ausentes en deserialización STJ; \texttt{[Required]} + \texttt{[EmailAddress]} + \texttt{[StringLength]} bloquean valores inválidos en validación de modelo. \texttt{InvalidModelStateResponseFactory} unifica ambas rutas de error en el formato \texttt{ErrorResponse} propio de la API. BN-08 ahora retorna HTTP~400 con \texttt{VALIDATION\_FAILED}.
 
-    \item \textbf{Corrección recomendada para DEF-02:} Mover la verificación de blacklist \emph{antes} de que el middleware retorne el principal validado, o implementar un \texttt{IAuthorizationHandler} que consulte la blacklist como paso de autorización posterior a la autenticación.
+    \item \textbf{Corrección recomendada para DEF-02:} Agregar \texttt{return} tras \texttt{ctx.Fail()} en \texttt{OnTokenValidated}, o mover el check de blacklist a un middleware inline entre \texttt{UseAuthentication()} y \texttt{UseAuthorization()} que inspeccione \texttt{HttpContext.User.FindFirstValue(Jti)} y retorne HTTP~401 directamente si el \texttt{jti} está revocado. Esta segunda opción es más robusta porque opera sobre el \texttt{ClaimsPrincipal} ya construido, independientemente del comportamiento interno del handler JWT.
 \end{enumerate}
 
 % ── REFERENCIAS ──────────────────────────────────────────────────────────────

@@ -1,0 +1,38 @@
+Summary
+  Generated on: 3/1/2026 - 11:09:51 PM
+  Coverage date: 3/1/2026 - 11:09:47 PM
+  Parser: Cobertura
+  Assemblies: 1
+  Classes: 16
+  Files: 10
+  Line coverage: 14.2%
+  Covered lines: 100
+  Uncovered lines: 603
+  Coverable lines: 703
+  Total lines: 1220
+  Branch coverage: 4.6% (12 of 256)
+  Covered branches: 12
+  Total branches: 256
+  Method coverage: 23.6% (18 of 76)
+  Full method coverage: 22.3% (17 of 76)
+  Covered methods: 18
+  Fully covered methods: 17
+  Total methods: 76
+
+AuthApi                                              14.2%
+  AuthApi.Controllers.AuthController                    0%
+  AuthApi.Controllers.JwksController                    0%
+  AuthApi.Data.ApplicationDbContext                   100%
+  AuthApi.Data.ApplicationUser                        100%
+  AuthApi.Infrastructure.Security.EcdsaKeyProvider   97.4%
+  AuthApi.Models.ErrorResponse                          0%
+  AuthApi.Models.LoginRequest                           0%
+  AuthApi.Models.LoginResponse                          0%
+  AuthApi.Models.RegisterRequest                        0%
+  AuthApi.Models.RegisterResponse                       0%
+  AuthApi.Models.ValidateResponse                       0%
+  AuthApi.Services.TokenBlacklist                     100%
+  AuthApi.Services.TokenService                       100%
+  Microsoft.AspNetCore.OpenApi.Generated                0%
+  Program                                               0%
+  System.Runtime.CompilerServices                       0%

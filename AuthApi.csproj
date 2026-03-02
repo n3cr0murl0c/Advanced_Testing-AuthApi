@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -8,19 +7,30 @@
     <AssemblyName>AuthApi</AssemblyName>
     <UserSecretsId>authapi-ecdsa-identity</UserSecretsId>
   </PropertyGroup>
-
+  <!-- Exclude test project files from the main web project compilation -->
   <ItemGroup>
-    <!-- Identity + EF Core -->
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0-preview.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"              Version="10.0.0-preview.*" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"               Version="10.0.0-preview.*" PrivateAssets="all" />
-
-    <!-- JWT Bearer Authentication -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"    Version="10.0.0-preview.*" />
-
-    <!-- OpenAPI / Scalar -->
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi"                     Version="10.0.0-preview.*" />
-    <PackageReference Include="Scalar.AspNetCore"                                Version="2.*" />
+    <Compile Remove="Tests\**" />
+    <Content Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference
+      Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"
+      Version="10.0.0-preview.*"
+    />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0-preview.*" />
+    <PackageReference
+      Include="Microsoft.EntityFrameworkCore.Tools"
+      Version="10.0.0-preview.*"
+      PrivateAssets="all"
+    />
+    <PackageReference
+      Include="Microsoft.AspNetCore.Authentication.JwtBearer"
+      Version="10.0.0-preview.*"
+    />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-preview.*" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.*" />
+  </ItemGroup>
 </Project>

@@ -17,15 +17,16 @@ public sealed class AuthController(
     SignInManager<ApplicationUser> signInManager,
     TokenService tokenService,
     TokenBlacklist blacklist,
-    ILogger<AuthController> logger) : ControllerBase
+    ILogger<AuthController> logger
+) : ControllerBase
 {
     // ── POST /auth/register ───────────────────────────────────────────────────
 
     /// <summary>Register a new user account.</summary>
     [HttpPost("register")]
-    [ProducesResponseType(typeof(RegisterResponse),  StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ErrorResponse),     StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponse),     StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(RegisterResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest req)
     {
         // Check duplicate email
@@ -38,9 +39,9 @@ public sealed class AuthController(
 
         var user = new ApplicationUser
         {
-            UserName     = req.Username,
-            Email        = req.Email,
-            DisplayName  = req.DisplayName ?? req.Username,
+            UserName = req.Username,
+            Email = req.Email,
+            DisplayName = req.DisplayName ?? req.Username,
             // EmailConfirmed = true in dev; in prod send confirmation email
             EmailConfirmed = true,
         };
@@ -57,7 +58,10 @@ public sealed class AuthController(
 
         logger.LogInformation("New user registered: {UserId} ({Email})", user.Id, user.Email);
 
-        return CreatedAtAction(nameof(Validate), new RegisterResponse(user.Id, user.Email!, user.UserName!));
+        return CreatedAtAction(
+            nameof(Validate),
+            new RegisterResponse(user.Id, user.Email!, user.UserName!)
+        );
     }
 
     // ── POST /auth/login ──────────────────────────────────────────────────────
@@ -72,19 +76,29 @@ public sealed class AuthController(
         if (user is null)
         {
             logger.LogWarning("Login attempt for unknown email: {Email}", req.Email);
-            return Unauthorized(new ErrorResponse("INVALID_CREDENTIALS", "Email or password is incorrect."));
+            return Unauthorized(
+                new ErrorResponse("INVALID_CREDENTIALS", "Email or password is incorrect.")
+            );
         }
 
         // CheckPasswordSignInAsync handles lockout, password verification, etc.
-        var result = await signInManager.CheckPasswordSignInAsync(user, req.Password, lockoutOnFailure: true);
+        var result = await signInManager.CheckPasswordSignInAsync(
+            user,
+            req.Password,
+            lockoutOnFailure: true
+        );
 
         if (result.IsLockedOut)
-            return Unauthorized(new ErrorResponse("ACCOUNT_LOCKED", "Account locked. Try again later."));
+            return Unauthorized(
+                new ErrorResponse("ACCOUNT_LOCKED", "Account locked. Try again later.")
+            );
 
         if (!result.Succeeded)
         {
             logger.LogWarning("Failed login for {Email}", req.Email);
-            return Unauthorized(new ErrorResponse("INVALID_CREDENTIALS", "Email or password is incorrect."));
+            return Unauthorized(
+                new ErrorResponse("INVALID_CREDENTIALS", "Email or password is incorrect.")
+            );
         }
 
         var (token, expiresAt) = await tokenService.IssueTokenAsync(user);
@@ -106,13 +120,17 @@ public sealed class AuthController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult Validate()
     {
-        var claims   = User.Claims.ToList();
-        var sub      = claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
-        var email    = claims.First(c => c.Type == JwtRegisteredClaimNames.Email).Value;
+        var claims = User.Claims.ToList();
+        var sub = claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
+        var email = claims.First(c => c.Type == JwtRegisteredClaimNames.Email).Value;
         var username = claims.First(c => c.Type == ClaimTypes.Name).Value;
-        var roles    = claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
-        var iat      = long.Parse(claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iat)?.Value ?? "0");
-        var exp      = long.Parse(claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value ?? "0");
+        var roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+        var iat = long.Parse(
+            claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Iat)?.Value ?? "0"
+        );
+        var exp = long.Parse(
+            claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value ?? "0"
+        );
 
         return Ok(new ValidateResponse(sub, email, username, roles, iat, exp));
     }
@@ -129,11 +147,13 @@ public sealed class AuthController(
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult Logout()
     {
-        var jti    = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        var jti = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
         var expStr = User.FindFirstValue(JwtRegisteredClaimNames.Exp);
 
         if (jti is null)
-            return BadRequest(new ErrorResponse("MISSING_JTI", "Token does not contain a jti claim."));
+            return BadRequest(
+                new ErrorResponse("MISSING_JTI", "Token does not contain a jti claim.")
+            );
 
         var exp = expStr is not null
             ? DateTimeOffset.FromUnixTimeSeconds(long.Parse(expStr)).UtcDateTime

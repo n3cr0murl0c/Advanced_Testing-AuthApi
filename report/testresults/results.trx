@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="803223a7-c34d-4d68-b4ee-3412b1cbc8f1" name="Admin@N3CR0-SH1R0 2026-03-01 23:09:45" runUser="N3CR0-SH1R0\Admin" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-03-01T23:09:45.2868663-05:00" queuing="2026-03-01T23:09:45.2868666-05:00" start="2026-03-01T23:09:43.0508626-05:00" finish="2026-03-01T23:09:47.4408724-05:00" />
+  <TestSettings name="default" id="247b09a0-4004-4701-9063-29894b91e700">
+    <Deployment runDeploymentRoot="Admin_N3CR0-SH1R0_2026-03-01_23_09_45" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2ace00c4-c92d-4ef8-8ac8-51ec4799e35c" testId="1cc6322d-0fa1-5f11-b3ae-150a700be09a" testName="AuthApi.Tests.TokenServiceTests.IssueToken_SubClaimEqualsUserId" computerName="N3CR0-SH1R0" duration="00:00:00.0695195" startTime="2026-03-01T23:09:46.6910048-05:00" endTime="2026-03-01T23:09:46.6910049-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ace00c4-c92d-4ef8-8ac8-51ec4799e35c" />
+    <UnitTestResult executionId="652d5b1f-762b-4ead-872b-ceea06516754" testId="fb6d9bf5-0ead-ee32-5cfe-f625e629f4f7" testName="AuthApi.Tests.TokenServiceTests.IssueToken_TamperedSignatureFails" computerName="N3CR0-SH1R0" duration="00:00:00.0713835" startTime="2026-03-01T23:09:46.5413634-05:00" endTime="2026-03-01T23:09:46.5413636-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="652d5b1f-762b-4ead-872b-ceea06516754" />
+    <UnitTestResult executionId="a9f5bf35-e6f8-4f39-bfc2-163b8dacbee8" testId="13259ea8-8d2b-4be7-51f2-f8c73ac7e20f" testName="AuthApi.Tests.EcdsaKeyProviderTests.GeneratedKey_CurveIsP256" computerName="N3CR0-SH1R0" duration="00:00:00.0039819" startTime="2026-03-01T23:09:45.2722089-05:00" endTime="2026-03-01T23:09:45.2722091-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9f5bf35-e6f8-4f39-bfc2-163b8dacbee8" />
+    <UnitTestResult executionId="0eecdcc3-312c-436f-9e94-09bf8e8e6d81" testId="63bd2b8b-969f-506c-b6c8-59465aefa01d" testName="AuthApi.Tests.TokenServiceTests.IssueToken_ExpiryIsConfiguredDuration" computerName="N3CR0-SH1R0" duration="00:00:00.0707063" startTime="2026-03-01T23:09:46.8316328-05:00" endTime="2026-03-01T23:09:46.8316330-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0eecdcc3-312c-436f-9e94-09bf8e8e6d81" />
+    <UnitTestResult executionId="d2e50b2d-ca6e-48d6-9f83-6e21e4b34f93" testId="75034c4e-810c-f2e5-14c8-cd93afe2dcce" testName="AuthApi.Tests.EcdsaKeyProviderTests.Constructor_WhenKeyFileExists_LoadsSameKey" computerName="N3CR0-SH1R0" duration="00:00:00.0226759" startTime="2026-03-01T23:09:45.2950246-05:00" endTime="2026-03-01T23:09:45.2950248-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d2e50b2d-ca6e-48d6-9f83-6e21e4b34f93" />
+    <UnitTestResult executionId="fae40815-6b96-4043-b6ee-f8af4cb5f8a0" testId="e04e53ef-5be7-f6fe-7203-877f77c25ee0" testName="AuthApi.Tests.TokenBlacklistTests.Revoke_SameJtiTwice_DoesNotThrow" computerName="N3CR0-SH1R0" duration="00:00:00.0056781" startTime="2026-03-01T23:09:45.2181022-05:00" endTime="2026-03-01T23:09:45.2181022-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fae40815-6b96-4043-b6ee-f8af4cb5f8a0" />
+    <UnitTestResult executionId="60b519f6-2356-474e-a975-ebfc095ed7fd" testId="f46e7f1d-7f88-5d89-6577-d0c0b3f316d4" testName="AuthApi.Tests.TokenServiceTests.IssueToken_ReturnsNonEmptyToken" computerName="N3CR0-SH1R0" duration="00:00:00.0704070" startTime="2026-03-01T23:09:46.3994260-05:00" endTime="2026-03-01T23:09:46.3994261-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="60b519f6-2356-474e-a975-ebfc095ed7fd" />
+    <UnitTestResult executionId="11b251ea-e33d-4b6e-9443-c5a3ae74a358" testId="5c297cd9-e917-d6d8-e4e7-ba99e6f6c9a6" testName="AuthApi.Tests.EcdsaKeyProviderTests.Constructor_WhenKeyFileAbsent_GeneratesAndPersistsPem" computerName="N3CR0-SH1R0" duration="00:00:00.2063013" startTime="2026-03-01T23:09:45.2234647-05:00" endTime="2026-03-01T23:09:45.2234659-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11b251ea-e33d-4b6e-9443-c5a3ae74a358" />
+    <UnitTestResult executionId="a6406949-6c0b-4dec-97fa-d58e213e775a" testId="43a8ead3-ee4e-639e-3ab8-ef1ed2e61dde" testName="AuthApi.Tests.TokenBlacklistTests.Revoke_ThenIsRevoked_ReturnsTrue" computerName="N3CR0-SH1R0" duration="00:00:00.1904299" startTime="2026-03-01T23:09:45.2082026-05:00" endTime="2026-03-01T23:09:45.2082508-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6406949-6c0b-4dec-97fa-d58e213e775a" />
+    <UnitTestResult executionId="4eebdc7e-d9ca-477a-98e2-7484cf8444af" testId="d1b2d97d-f1d0-9228-a83f-003db9845fa9" testName="AuthApi.Tests.EcdsaKeyProviderTests.PublicSecurityKey_DoesNotContainPrivateKeyMaterial" computerName="N3CR0-SH1R0" duration="00:00:00.0069972" startTime="2026-03-01T23:09:45.2558990-05:00" endTime="2026-03-01T23:09:45.2558990-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4eebdc7e-d9ca-477a-98e2-7484cf8444af" />
+    <UnitTestResult executionId="6be74678-6e25-44f3-a48a-22ab091b3dde" testId="71ade27e-dfac-9b57-66fe-e8a3711c59d0" testName="AuthApi.Tests.EcdsaKeyProviderTests.KeyId_IsEcdsaDash1_InBothBranches(preCreateKey: False)" computerName="N3CR0-SH1R0" duration="00:00:00.0034270" startTime="2026-03-01T23:09:45.2681045-05:00" endTime="2026-03-01T23:09:45.2681047-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6be74678-6e25-44f3-a48a-22ab091b3dde" />
+    <UnitTestResult executionId="6e6fdcff-0362-4d5c-8be9-8e9cf06099e8" testId="00882738-ac35-9f91-e1eb-a09f93abb6f9" testName="AuthApi.Tests.TokenServiceTests.IssueToken_JtiIsUniquePerIssuance" computerName="N3CR0-SH1R0" duration="00:00:00.0696437" startTime="2026-03-01T23:09:46.7607839-05:00" endTime="2026-03-01T23:09:46.7607840-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e6fdcff-0362-4d5c-8be9-8e9cf06099e8" />
+    <UnitTestResult executionId="72228f84-6ea4-4ed1-935e-a46ef3b7c7b5" testId="08a2fdf8-382f-ced4-1755-ef99ce6333bc" testName="AuthApi.Tests.TokenServiceTests.IssueToken_SignatureVerifiesWithEcdsaPublicKey" computerName="N3CR0-SH1R0" duration="00:00:00.0798818" startTime="2026-03-01T23:09:46.6213574-05:00" endTime="2026-03-01T23:09:46.6213575-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72228f84-6ea4-4ed1-935e-a46ef3b7c7b5" />
+    <UnitTestResult executionId="995daca8-3c79-44ad-bc63-303da19b9cc9" testId="697f0419-f98d-4b2f-0b42-1437d5fb6b78" testName="AuthApi.Tests.EcdsaKeyProviderTests.SignAndVerify_RoundTrip_Succeeds" computerName="N3CR0-SH1R0" duration="00:00:00.0069270" startTime="2026-03-01T23:09:45.2563508-05:00" endTime="2026-03-01T23:09:45.2563508-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="995daca8-3c79-44ad-bc63-303da19b9cc9" />
+    <UnitTestResult executionId="be8c8f06-31aa-4164-bd4c-c9a52a7298e9" testId="b9a80ddf-03a6-d175-eba1-3fb015bb42f6" testName="AuthApi.Tests.TokenBlacklistTests.Purge_RemovesExpiredEntries_KeepsActiveOnes" computerName="N3CR0-SH1R0" duration="00:00:00.0023665" startTime="2026-03-01T23:09:45.2191376-05:00" endTime="2026-03-01T23:09:45.2191376-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be8c8f06-31aa-4164-bd4c-c9a52a7298e9" />
+    <UnitTestResult executionId="2db5b635-a38d-4188-873c-81e98ccce5a1" testId="bf687e5e-2ebd-ae3c-c5e6-042672753faa" testName="AuthApi.Tests.TokenServiceTests.IssueToken_ContainsEmailClaim" computerName="N3CR0-SH1R0" duration="00:00:00.0699046" startTime="2026-03-01T23:09:46.9016660-05:00" endTime="2026-03-01T23:09:46.9016662-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2db5b635-a38d-4188-873c-81e98ccce5a1" />
+    <UnitTestResult executionId="cc9dbe46-54c1-422a-a6c7-41e096e84152" testId="809020cd-81e2-a42b-829c-25887e0f1d9c" testName="AuthApi.Tests.TokenServiceTests.IssueToken_AudienceClaimIsCorrect" computerName="N3CR0-SH1R0" duration="00:00:00.0703093" startTime="2026-03-01T23:09:46.4698557-05:00" endTime="2026-03-01T23:09:46.4698558-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc9dbe46-54c1-422a-a6c7-41e096e84152" />
+    <UnitTestResult executionId="77b293d4-fa8d-4bc4-b8de-d47478e62dc6" testId="319ef8c5-90e8-7b9b-26e8-c56244413af1" testName="AuthApi.Tests.TokenBlacklistTests.Revoke_ConcurrentAccess_DoesNotThrow" computerName="N3CR0-SH1R0" duration="00:00:00.0092756" startTime="2026-03-01T23:09:45.2255208-05:00" endTime="2026-03-01T23:09:45.2255211-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="77b293d4-fa8d-4bc4-b8de-d47478e62dc6" />
+    <UnitTestResult executionId="52c4d399-e29b-4298-985b-9ef6624cb362" testId="c8ffe487-7d01-4565-6861-0a642a72245b" testName="AuthApi.Tests.TokenBlacklistTests.IsRevoked_AfterRevoke_ReturnsTrueOnEverySubsequentCall" computerName="N3CR0-SH1R0" duration="00:00:00.0002591" startTime="2026-03-01T23:09:45.2261204-05:00" endTime="2026-03-01T23:09:45.2261206-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52c4d399-e29b-4298-985b-9ef6624cb362" />
+    <UnitTestResult executionId="225c48a5-e1b9-45bf-9115-2a622c1ac810" testId="57996404-c99e-d674-4796-a13dda5e719a" testName="AuthApi.Tests.EcdsaKeyProviderTests.SigningCredentials_AlgorithmIsES256" computerName="N3CR0-SH1R0" duration="00:00:00.0073507" startTime="2026-03-01T23:09:45.2310482-05:00" endTime="2026-03-01T23:09:45.2310484-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="225c48a5-e1b9-45bf-9115-2a622c1ac810" />
+    <UnitTestResult executionId="6815b33f-2178-460b-a4a0-aa2bdac6878a" testId="37a1eae9-55f5-9185-c12e-eab56d993ce5" testName="AuthApi.Tests.TokenBlacklistTests.IsRevoked_ReturnsFalse_ForUnknownJti" computerName="N3CR0-SH1R0" duration="00:00:00.0001450" startTime="2026-03-01T23:09:45.2194549-05:00" endTime="2026-03-01T23:09:45.2194549-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6815b33f-2178-460b-a4a0-aa2bdac6878a" />
+    <UnitTestResult executionId="3192e508-16ca-4272-94dd-8cbf52f2d0ab" testId="9b125ac2-292d-c1a6-1229-b3c3505cec4b" testName="AuthApi.Tests.EcdsaKeyProviderTests.KeyId_IsEcdsaDash1_InBothBranches(preCreateKey: True)" computerName="N3CR0-SH1R0" duration="00:00:00.0192542" startTime="2026-03-01T23:09:45.2645706-05:00" endTime="2026-03-01T23:09:45.2645709-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3192e508-16ca-4272-94dd-8cbf52f2d0ab" />
+    <UnitTestResult executionId="20a4caee-174e-47cd-a89b-0b4354017555" testId="cb8f19d5-bad0-f54e-de2c-163c8dd8fdca" testName="AuthApi.Tests.TokenServiceTests.IssueToken_WrongIssuerFails" computerName="N3CR0-SH1R0" duration="00:00:00.1178535" startTime="2026-03-01T23:09:46.2353692-05:00" endTime="2026-03-01T23:09:46.2353694-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20a4caee-174e-47cd-a89b-0b4354017555" />
+    <UnitTestResult executionId="e624a3af-5e9c-4362-b192-f0063faaaba9" testId="51daaa38-5edb-d96f-1e98-dd54402e2255" testName="AuthApi.Tests.TokenServiceTests.IssueToken_AlgorithmHeaderIsES256" computerName="N3CR0-SH1R0" duration="00:00:01.1032842" startTime="2026-03-01T23:09:46.1173879-05:00" endTime="2026-03-01T23:09:46.1173881-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e624a3af-5e9c-4362-b192-f0063faaaba9" />
+    <UnitTestResult executionId="5469285e-af6f-47b3-8542-c516a541d722" testId="41f88eda-12be-e72f-800d-3a514e5cd93e" testName="AuthApi.Tests.TokenServiceTests.IssueToken_IssuerClaimIsCorrect" computerName="N3CR0-SH1R0" duration="00:00:00.0933910" startTime="2026-03-01T23:09:46.3288924-05:00" endTime="2026-03-01T23:09:46.3288925-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5469285e-af6f-47b3-8542-c516a541d722" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.Constructor_WhenKeyFileExists_LoadsSameKey" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="75034c4e-810c-f2e5-14c8-cd93afe2dcce">
+      <Execution id="d2e50b2d-ca6e-48d6-9f83-6e21e4b34f93" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="Constructor_WhenKeyFileExists_LoadsSameKey" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenBlacklistTests.IsRevoked_AfterRevoke_ReturnsTrueOnEverySubsequentCall" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="c8ffe487-7d01-4565-6861-0a642a72245b">
+      <Execution id="52c4d399-e29b-4298-985b-9ef6624cb362" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenBlacklistTests" name="IsRevoked_AfterRevoke_ReturnsTrueOnEverySubsequentCall" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_ExpiryIsConfiguredDuration" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="63bd2b8b-969f-506c-b6c8-59465aefa01d">
+      <Execution id="0eecdcc3-312c-436f-9e94-09bf8e8e6d81" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_ExpiryIsConfiguredDuration" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenBlacklistTests.Revoke_ThenIsRevoked_ReturnsTrue" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="43a8ead3-ee4e-639e-3ab8-ef1ed2e61dde">
+      <Execution id="a6406949-6c0b-4dec-97fa-d58e213e775a" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenBlacklistTests" name="Revoke_ThenIsRevoked_ReturnsTrue" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_SubClaimEqualsUserId" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="1cc6322d-0fa1-5f11-b3ae-150a700be09a">
+      <Execution id="2ace00c4-c92d-4ef8-8ac8-51ec4799e35c" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_SubClaimEqualsUserId" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.KeyId_IsEcdsaDash1_InBothBranches(preCreateKey: True)" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="9b125ac2-292d-c1a6-1229-b3c3505cec4b">
+      <Execution id="3192e508-16ca-4272-94dd-8cbf52f2d0ab" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="KeyId_IsEcdsaDash1_InBothBranches" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.SigningCredentials_AlgorithmIsES256" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="57996404-c99e-d674-4796-a13dda5e719a">
+      <Execution id="225c48a5-e1b9-45bf-9115-2a622c1ac810" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="SigningCredentials_AlgorithmIsES256" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_TamperedSignatureFails" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="fb6d9bf5-0ead-ee32-5cfe-f625e629f4f7">
+      <Execution id="652d5b1f-762b-4ead-872b-ceea06516754" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_TamperedSignatureFails" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.PublicSecurityKey_DoesNotContainPrivateKeyMaterial" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="d1b2d97d-f1d0-9228-a83f-003db9845fa9">
+      <Execution id="4eebdc7e-d9ca-477a-98e2-7484cf8444af" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="PublicSecurityKey_DoesNotContainPrivateKeyMaterial" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_ReturnsNonEmptyToken" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="f46e7f1d-7f88-5d89-6577-d0c0b3f316d4">
+      <Execution id="60b519f6-2356-474e-a975-ebfc095ed7fd" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_ReturnsNonEmptyToken" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.Constructor_WhenKeyFileAbsent_GeneratesAndPersistsPem" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="5c297cd9-e917-d6d8-e4e7-ba99e6f6c9a6">
+      <Execution id="11b251ea-e33d-4b6e-9443-c5a3ae74a358" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="Constructor_WhenKeyFileAbsent_GeneratesAndPersistsPem" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_SignatureVerifiesWithEcdsaPublicKey" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="08a2fdf8-382f-ced4-1755-ef99ce6333bc">
+      <Execution id="72228f84-6ea4-4ed1-935e-a46ef3b7c7b5" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_SignatureVerifiesWithEcdsaPublicKey" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.SignAndVerify_RoundTrip_Succeeds" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="697f0419-f98d-4b2f-0b42-1437d5fb6b78">
+      <Execution id="995daca8-3c79-44ad-bc63-303da19b9cc9" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="SignAndVerify_RoundTrip_Succeeds" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenBlacklistTests.Purge_RemovesExpiredEntries_KeepsActiveOnes" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="b9a80ddf-03a6-d175-eba1-3fb015bb42f6">
+      <Execution id="be8c8f06-31aa-4164-bd4c-c9a52a7298e9" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenBlacklistTests" name="Purge_RemovesExpiredEntries_KeepsActiveOnes" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenBlacklistTests.IsRevoked_ReturnsFalse_ForUnknownJti" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="37a1eae9-55f5-9185-c12e-eab56d993ce5">
+      <Execution id="6815b33f-2178-460b-a4a0-aa2bdac6878a" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenBlacklistTests" name="IsRevoked_ReturnsFalse_ForUnknownJti" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_AudienceClaimIsCorrect" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="809020cd-81e2-a42b-829c-25887e0f1d9c">
+      <Execution id="cc9dbe46-54c1-422a-a6c7-41e096e84152" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_AudienceClaimIsCorrect" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_WrongIssuerFails" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="cb8f19d5-bad0-f54e-de2c-163c8dd8fdca">
+      <Execution id="20a4caee-174e-47cd-a89b-0b4354017555" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_WrongIssuerFails" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenBlacklistTests.Revoke_SameJtiTwice_DoesNotThrow" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="e04e53ef-5be7-f6fe-7203-877f77c25ee0">
+      <Execution id="fae40815-6b96-4043-b6ee-f8af4cb5f8a0" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenBlacklistTests" name="Revoke_SameJtiTwice_DoesNotThrow" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.GeneratedKey_CurveIsP256" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="13259ea8-8d2b-4be7-51f2-f8c73ac7e20f">
+      <Execution id="a9f5bf35-e6f8-4f39-bfc2-163b8dacbee8" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="GeneratedKey_CurveIsP256" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_AlgorithmHeaderIsES256" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="51daaa38-5edb-d96f-1e98-dd54402e2255">
+      <Execution id="e624a3af-5e9c-4362-b192-f0063faaaba9" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_AlgorithmHeaderIsES256" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.EcdsaKeyProviderTests.KeyId_IsEcdsaDash1_InBothBranches(preCreateKey: False)" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="71ade27e-dfac-9b57-66fe-e8a3711c59d0">
+      <Execution id="6be74678-6e25-44f3-a48a-22ab091b3dde" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.EcdsaKeyProviderTests" name="KeyId_IsEcdsaDash1_InBothBranches" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_ContainsEmailClaim" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="bf687e5e-2ebd-ae3c-c5e6-042672753faa">
+      <Execution id="2db5b635-a38d-4188-873c-81e98ccce5a1" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_ContainsEmailClaim" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_JtiIsUniquePerIssuance" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="00882738-ac35-9f91-e1eb-a09f93abb6f9">
+      <Execution id="6e6fdcff-0362-4d5c-8be9-8e9cf06099e8" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_JtiIsUniquePerIssuance" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenServiceTests.IssueToken_IssuerClaimIsCorrect" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="41f88eda-12be-e72f-800d-3a514e5cd93e">
+      <Execution id="5469285e-af6f-47b3-8542-c516a541d722" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenServiceTests" name="IssueToken_IssuerClaimIsCorrect" />
+    </UnitTest>
+    <UnitTest name="AuthApi.Tests.TokenBlacklistTests.Revoke_ConcurrentAccess_DoesNotThrow" storage="c:\users\admin\downloads\files\authapi_project\advanced_testing-authapi\tests\bin\debug\net10.0\authapi.tests.dll" id="319ef8c5-90e8-7b9b-26e8-c56244413af1">
+      <Execution id="77b293d4-fa8d-4bc4-b8de-d47478e62dc6" />
+      <TestMethod codeBase="C:\Users\Admin\Downloads\files\AuthApi_project\Advanced_Testing-AuthApi\Tests\bin\Debug\net10.0\AuthApi.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="AuthApi.Tests.TokenBlacklistTests" name="Revoke_ConcurrentAccess_DoesNotThrow" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1cc6322d-0fa1-5f11-b3ae-150a700be09a" executionId="2ace00c4-c92d-4ef8-8ac8-51ec4799e35c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb6d9bf5-0ead-ee32-5cfe-f625e629f4f7" executionId="652d5b1f-762b-4ead-872b-ceea06516754" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13259ea8-8d2b-4be7-51f2-f8c73ac7e20f" executionId="a9f5bf35-e6f8-4f39-bfc2-163b8dacbee8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63bd2b8b-969f-506c-b6c8-59465aefa01d" executionId="0eecdcc3-312c-436f-9e94-09bf8e8e6d81" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75034c4e-810c-f2e5-14c8-cd93afe2dcce" executionId="d2e50b2d-ca6e-48d6-9f83-6e21e4b34f93" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e04e53ef-5be7-f6fe-7203-877f77c25ee0" executionId="fae40815-6b96-4043-b6ee-f8af4cb5f8a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f46e7f1d-7f88-5d89-6577-d0c0b3f316d4" executionId="60b519f6-2356-474e-a975-ebfc095ed7fd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c297cd9-e917-d6d8-e4e7-ba99e6f6c9a6" executionId="11b251ea-e33d-4b6e-9443-c5a3ae74a358" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="43a8ead3-ee4e-639e-3ab8-ef1ed2e61dde" executionId="a6406949-6c0b-4dec-97fa-d58e213e775a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1b2d97d-f1d0-9228-a83f-003db9845fa9" executionId="4eebdc7e-d9ca-477a-98e2-7484cf8444af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="71ade27e-dfac-9b57-66fe-e8a3711c59d0" executionId="6be74678-6e25-44f3-a48a-22ab091b3dde" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00882738-ac35-9f91-e1eb-a09f93abb6f9" executionId="6e6fdcff-0362-4d5c-8be9-8e9cf06099e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="08a2fdf8-382f-ced4-1755-ef99ce6333bc" executionId="72228f84-6ea4-4ed1-935e-a46ef3b7c7b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="697f0419-f98d-4b2f-0b42-1437d5fb6b78" executionId="995daca8-3c79-44ad-bc63-303da19b9cc9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9a80ddf-03a6-d175-eba1-3fb015bb42f6" executionId="be8c8f06-31aa-4164-bd4c-c9a52a7298e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf687e5e-2ebd-ae3c-c5e6-042672753faa" executionId="2db5b635-a38d-4188-873c-81e98ccce5a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="809020cd-81e2-a42b-829c-25887e0f1d9c" executionId="cc9dbe46-54c1-422a-a6c7-41e096e84152" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="319ef8c5-90e8-7b9b-26e8-c56244413af1" executionId="77b293d4-fa8d-4bc4-b8de-d47478e62dc6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8ffe487-7d01-4565-6861-0a642a72245b" executionId="52c4d399-e29b-4298-985b-9ef6624cb362" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="57996404-c99e-d674-4796-a13dda5e719a" executionId="225c48a5-e1b9-45bf-9115-2a622c1ac810" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="37a1eae9-55f5-9185-c12e-eab56d993ce5" executionId="6815b33f-2178-460b-a4a0-aa2bdac6878a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9b125ac2-292d-c1a6-1229-b3c3505cec4b" executionId="3192e508-16ca-4272-94dd-8cbf52f2d0ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb8f19d5-bad0-f54e-de2c-163c8dd8fdca" executionId="20a4caee-174e-47cd-a89b-0b4354017555" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="51daaa38-5edb-d96f-1e98-dd54402e2255" executionId="e624a3af-5e9c-4362-b192-f0063faaaba9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="41f88eda-12be-e72f-800d-3a514e5cd93e" executionId="5469285e-af6f-47b3-8542-c516a541d722" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="25" executed="25" passed="25" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.3)&#xD;
+[xUnit.net 00:00:00.08]   Discovering: AuthApi.Tests&#xD;
+[xUnit.net 00:00:00.13]   Discovered:  AuthApi.Tests&#xD;
+[xUnit.net 00:00:00.14]   Starting:    AuthApi.Tests&#xD;
+[xUnit.net 00:00:02.07]   Finished:    AuthApi.Tests&#xD;
+</StdOut>
+    </Output>
+    <CollectorDataEntries>
+      <Collector agentName="N3CR0-SH1R0" uri="datacollector://microsoft/CoverletCodeCoverage/1.0" collectorDisplayName="XPlat code coverage">
+        <UriAttachments>
+          <UriAttachment>
+            <A href="N3CR0-SH1R0\coverage.cobertura.xml"></A>
+          </UriAttachment>
+        </UriAttachments>
+      </Collector>
+    </CollectorDataEntries>
+  </ResultSummary>
+</TestRun>

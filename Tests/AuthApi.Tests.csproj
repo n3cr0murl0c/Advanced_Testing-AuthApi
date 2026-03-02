@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -9,19 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="8.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <ProjectReference Include="../AuthApi.csproj" />
-
-    <!-- Test framework -->
-    <PackageReference Include="Microsoft.NET.Test.Sdk"                    Version="17.*" />
-    <PackageReference Include="xunit"                                     Version="2.*" />
-    <PackageReference Include="xunit.runner.visualstudio"                 Version="2.*" PrivateAssets="all" />
-    <PackageReference Include="FluentAssertions"                          Version="6.*" />
-
-    <!-- Integration test host -->
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"          Version="10.0.0-preview.*" />
-
-    <!-- EF Core in-memory for isolated unit tests -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"    Version="10.0.0-preview.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+    <PackageReference Include="xunit" Version="2.*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.*" PrivateAssets="all" />
+    <PackageReference Include="FluentAssertions" Version="6.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.0-preview.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.0-preview.*" />
   </ItemGroup>
-
 </Project>

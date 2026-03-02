@@ -50,15 +50,15 @@ public sealed class TokenBlacklistTests
     public void Purge_RemovesExpiredEntries_KeepsActiveOnes()
     {
         var expiredJti = "expired-jti";
-        var activeJti  = "active-jti";
+        var activeJti = "active-jti";
 
         _sut.Revoke(expiredJti, DateTime.UtcNow.AddSeconds(-1)); // already expired
-        _sut.Revoke(activeJti,  DateTime.UtcNow.AddHours(1));    // still valid
+        _sut.Revoke(activeJti, DateTime.UtcNow.AddHours(1)); // still valid
 
         _sut.Purge();
 
         _sut.IsRevoked(expiredJti).Should().BeFalse("expired entries must be purged");
-        _sut.IsRevoked(activeJti) .Should().BeTrue ("active entries must survive purge");
+        _sut.IsRevoked(activeJti).Should().BeTrue("active entries must survive purge");
     }
 
     // ── BN: Revoking same jti twice is idempotent ────────────────────────────
@@ -81,7 +81,8 @@ public sealed class TokenBlacklistTests
     {
         var jtis = Enumerable.Range(0, 100).Select(_ => Guid.NewGuid().ToString()).ToList();
 
-        var act = () => Parallel.ForEach(jtis, jti => _sut.Revoke(jti, DateTime.UtcNow.AddHours(1)));
+        var act = () =>
+            Parallel.ForEach(jtis, jti => _sut.Revoke(jti, DateTime.UtcNow.AddHours(1)));
         act.Should().NotThrow();
 
         jtis.All(_sut.IsRevoked).Should().BeTrue();

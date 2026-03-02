@@ -22,9 +22,9 @@ namespace AuthApi.Tests;
 /// </summary>
 public sealed class TokenServiceTests : IDisposable
 {
-    private readonly string         _tempDir;
+    private readonly string _tempDir;
     private readonly EcdsaKeyProvider _keyProvider;
-    private readonly TokenService   _tokenService;
+    private readonly TokenService _tokenService;
     private readonly ApplicationUser _user;
     private readonly UserManager<ApplicationUser> _userManager;
 
@@ -35,13 +35,15 @@ public sealed class TokenServiceTests : IDisposable
 
         // ── Config ─────────────────────────────────────────────────────────
         var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["Jwt:Issuer"]        = "https://test.issuer",
-                ["Jwt:Audience"]      = "https://test.audience",
-                ["Jwt:ExpiryMinutes"] = "30",
-                ["Jwt:EcdsaKeyPath"]  = Path.Combine(_tempDir, "test.pem"),
-            })
+            .AddInMemoryCollection(
+                new Dictionary<string, string?>
+                {
+                    ["Jwt:Issuer"] = "https://test.issuer",
+                    ["Jwt:Audience"] = "https://test.audience",
+                    ["Jwt:ExpiryMinutes"] = "30",
+                    ["Jwt:EcdsaKeyPath"] = Path.Combine(_tempDir, "test.pem"),
+                }
+            )
             .Build();
 
         // ── Key provider ───────────────────────────────────────────────────
@@ -54,27 +56,36 @@ public sealed class TokenServiceTests : IDisposable
         var db = new ApplicationDbContext(dbOpts);
 
         var userStore = new UserStore<ApplicationUser>(db);
-        _userManager  = new UserManager<ApplicationUser>(
+        _userManager = new UserManager<ApplicationUser>(
             userStore,
-            Options.Create(new IdentityOptions
-            {
-                Password = { RequireDigit = false, RequiredLength = 1, RequireUppercase = false, RequireNonAlphanumeric = false }
-            }),
+            Options.Create(
+                new IdentityOptions
+                {
+                    Password =
+                    {
+                        RequireDigit = false,
+                        RequiredLength = 1,
+                        RequireUppercase = false,
+                        RequireNonAlphanumeric = false,
+                    },
+                }
+            ),
             new PasswordHasher<ApplicationUser>(),
             [],
             [],
             new UpperInvariantLookupNormalizer(),
             new IdentityErrorDescriber(),
             null!,
-            NullLogger<UserManager<ApplicationUser>>.Instance);
+            NullLogger<UserManager<ApplicationUser>>.Instance
+        );
 
         // Seed a test user
         _user = new ApplicationUser
         {
-            Id           = Guid.NewGuid().ToString(),
-            UserName     = "testuser",
-            Email        = "test@example.com",
-            DisplayName  = "Test User",
+            Id = Guid.NewGuid().ToString(),
+            UserName = "testuser",
+            Email = "test@example.com",
+            DisplayName = "Test User",
             EmailConfirmed = true,
         };
 
@@ -152,8 +163,8 @@ public sealed class TokenServiceTests : IDisposable
     {
         var (token, _) = await _tokenService.IssueTokenAsync(_user);
 
-        var jwt  = ParseToken(token);
-        var sub  = jwt.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
+        var jwt = ParseToken(token);
+        var sub = jwt.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
         sub.Should().Be(_user.Id);
     }
 
@@ -164,7 +175,7 @@ public sealed class TokenServiceTests : IDisposable
     {
         var (token, _) = await _tokenService.IssueTokenAsync(_user);
 
-        var jwt   = ParseToken(token);
+        var jwt = ParseToken(token);
         var email = jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Email)?.Value;
         email.Should().Be("test@example.com");
     }
@@ -190,21 +201,24 @@ public sealed class TokenServiceTests : IDisposable
     {
         var (token, _) = await _tokenService.IssueTokenAsync(_user);
 
-        var handler    = new JwtSecurityTokenHandler();
+        var handler = new JwtSecurityTokenHandler();
         var validParams = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey         = _keyProvider.PublicSecurityKey,
-            ValidateIssuer           = true,
-            ValidIssuer              = "https://test.issuer",
-            ValidateAudience         = true,
-            ValidAudience            = "https://test.audience",
-            ValidateLifetime         = true,
-            ClockSkew                = TimeSpan.Zero,
+            IssuerSigningKey = _keyProvider.PublicSecurityKey,
+            ValidateIssuer = true,
+            ValidIssuer = "https://test.issuer",
+            ValidateAudience = true,
+            ValidAudience = "https://test.audience",
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
         };
 
         var act = () => handler.ValidateToken(token, validParams, out _);
-        act.Should().NotThrow("a token signed with the private key must validate with the matching public key");
+        act.Should()
+            .NotThrow(
+                "a token signed with the private key must validate with the matching public key"
+            );
     }
 
     // ── CB: Tampered token must NOT verify ────────────────────────────────────
@@ -219,14 +233,14 @@ public sealed class TokenServiceTests : IDisposable
         parts[2] = parts[2][..^1] + (parts[2][^1] == 'A' ? 'B' : 'A');
         var tampered = string.Join('.', parts);
 
-        var handler    = new JwtSecurityTokenHandler();
+        var handler = new JwtSecurityTokenHandler();
         var validParams = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey         = _keyProvider.PublicSecurityKey,
-            ValidIssuer              = "https://test.issuer",
-            ValidAudience            = "https://test.audience",
-            ValidateLifetime         = false,
+            IssuerSigningKey = _keyProvider.PublicSecurityKey,
+            ValidIssuer = "https://test.issuer",
+            ValidAudience = "https://test.audience",
+            ValidateLifetime = false,
         };
 
         var act = () => handler.ValidateToken(tampered, validParams, out _);
@@ -240,15 +254,15 @@ public sealed class TokenServiceTests : IDisposable
     {
         var (token, _) = await _tokenService.IssueTokenAsync(_user);
 
-        var handler    = new JwtSecurityTokenHandler();
+        var handler = new JwtSecurityTokenHandler();
         var validParams = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey         = _keyProvider.PublicSecurityKey,
-            ValidateIssuer           = true,
-            ValidIssuer              = "https://wrong.issuer",  // ← wrong
-            ValidateAudience         = false,
-            ValidateLifetime         = false,
+            IssuerSigningKey = _keyProvider.PublicSecurityKey,
+            ValidateIssuer = true,
+            ValidIssuer = "https://wrong.issuer", // ← wrong
+            ValidateAudience = false,
+            ValidateLifetime = false,
         };
 
         var act = () => handler.ValidateToken(token, validParams, out _);

@@ -1,30 +1,33 @@
 using AuthApi.Data;
 using AuthApi.Infrastructure.Security;
+using AuthApi.Models;
 using AuthApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Database ──────────────────────────────────────────────────────────────────
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-    opt.UseSqlite(builder.Configuration.GetConnectionString("Default")
-        ?? "Data Source=auth.db"));
+    opt.UseSqlite(builder.Configuration.GetConnectionString("Default") ?? "Data Source=auth.db")
+);
 
 // ── ASP.NET Core Identity ─────────────────────────────────────────────────────
-builder.Services
-    .AddIdentity<ApplicationUser, IdentityRole>(opt =>
+builder
+    .Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
     {
         // Password policy
-        opt.Password.RequireDigit           = true;
-        opt.Password.RequiredLength         = 8;
-        opt.Password.RequireUppercase       = false;
+        opt.Password.RequireDigit = true;
+        opt.Password.RequiredLength = 8;
+        opt.Password.RequireUppercase = false;
         opt.Password.RequireNonAlphanumeric = false;
 
         // Lockout
-        opt.Lockout.DefaultLockoutTimeSpan  = TimeSpan.FromMinutes(5);
+        opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
         opt.Lockout.MaxFailedAccessAttempts = 5;
 
         // User
@@ -43,11 +46,11 @@ builder.Services.AddSingleton<TokenBlacklist>();
 builder.Services.AddScoped<TokenService>();
 
 // ── JWT Bearer Authentication ─────────────────────────────────────────────────
-builder.Services
-    .AddAuthentication(opt =>
+builder
+    .Services.AddAuthentication(opt =>
     {
         opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        opt.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
     .AddJwtBearer(opt =>
     {
@@ -61,15 +64,15 @@ builder.Services
             ValidateIssuerSigningKey = true,
 
             // ── Issuer / Audience ──────────────────────────────────────────
-            ValidateIssuer   = true,
-            ValidIssuer      = jwtConfig["Issuer"],
+            ValidateIssuer = true,
+            ValidIssuer = jwtConfig["Issuer"],
 
             ValidateAudience = true,
-            ValidAudience    = jwtConfig["Audience"],
+            ValidAudience = jwtConfig["Audience"],
 
             // ── Lifetime ───────────────────────────────────────────────────
-            ValidateLifetime      = true,
-            ClockSkew             = TimeSpan.FromSeconds(30),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30),
 
             // Map sub claim → ClaimTypes.NameIdentifier
             NameClaimType = System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub,
@@ -80,18 +83,21 @@ builder.Services
             // Single handler: inject ECDSA public key + enforce blacklist
             OnTokenValidated = async ctx =>
             {
-                var keyProvider = ctx.HttpContext.RequestServices
-                    .GetRequiredService<EcdsaKeyProvider>();
-                var blacklist = ctx.HttpContext.RequestServices
-                    .GetRequiredService<TokenBlacklist>();
+                var keyProvider =
+                    ctx.HttpContext.RequestServices.GetRequiredService<EcdsaKeyProvider>();
+                var blacklist =
+                    ctx.HttpContext.RequestServices.GetRequiredService<TokenBlacklist>();
 
                 // Ensure the public key is set for subsequent validations
                 ctx.Options.TokenValidationParameters.IssuerSigningKey =
                     keyProvider.PublicSecurityKey;
 
                 // Reject revoked tokens (jti in blacklist → logout was called)
-                var jti = ctx.Principal?.FindFirst(
-                    System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti)?.Value;
+                var jti = ctx
+                    .Principal?.FindFirst(
+                        System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti
+                    )
+                    ?.Value;
 
                 if (jti is not null && blacklist.IsRevoked(jti))
                     ctx.Fail("Token has been revoked.");
@@ -102,7 +108,21 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+
+// ── MVC + custom validation error shape ───────────────────────────────────────
+// Without this factory, absent/invalid fields return the default ProblemDetails
+// format instead of the API's ErrorResponse shape.
+// [Required] + required keyword both funnel through InvalidModelStateResponseFactory.
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(opt =>
+    {
+        opt.InvalidModelStateResponseFactory = ctx =>
+            new BadRequestObjectResult(new ErrorResponse(
+                "VALIDATION_FAILED",
+                string.Join("; ", ctx.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage))));
+    });
 
 // ── OpenAPI / Scalar ──────────────────────────────────────────────────────────
 builder.Services.AddOpenApi();
@@ -113,7 +133,7 @@ var app = builder.Build();
 // ── Database init + seed roles ────────────────────────────────────────────────
 using (var scope = app.Services.CreateScope())
 {
-    var db          = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     await db.Database.MigrateAsync();

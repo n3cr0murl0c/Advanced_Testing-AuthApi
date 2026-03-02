@@ -390,7 +390,7 @@ DEF-02 & BN-16 &
   Token revocado post-logout sigue siendo aceptado en \texttt{/auth/validate} &
   Defecto de composición (pipeline) &
   Alta &
-  Abierto \\
+  \textbf{Corregido} \\
 \hline
 \end{tabular}
 \end{center}
@@ -431,10 +431,12 @@ no garantiza el corte del pipeline. El defecto es de \emph{composición}: \textt
 funciona correctamente en aislamiento (CB-13/CB-14 pasan al 100\%), pero su integración con
 \texttt{JwtBearerEvents} no produce el rechazo HTTP~401 esperado.
 
-\textit{Corrección recomendada:} mover el check a un middleware inline entre
-\texttt{UseAuthentication()} y \texttt{UseAuthorization()}, que inspeccione
-\texttt{HttpContext.User} ya construido y retorne HTTP~401 si el \texttt{jti} está revocado.
-Alternativa mínima: agregar \texttt{return} tras \texttt{ctx.Fail()}.
+\textit{Corrección aplicada:} el check de blacklist fue removido de \texttt{OnTokenValidated}
+y reubicado en un middleware inline entre \texttt{UseAuthentication()} y
+\texttt{UseAuthorization()}. Este middleware inspecciona \texttt{HttpContext.User} —
+ya construido por el handler JWT — y retorna HTTP~401 con
+\texttt{ErrorResponse("TOKEN\_REVOKED",~...)} si el \texttt{jti} está revocado,
+cortando el pipeline antes de que \texttt{UseAuthorization()} evalúe el \texttt{[Authorize]}.
 
 \textit{Implicación académica:} 100\% de cobertura de ramas en tests unitarios no detecta
 defectos de composición entre componentes. Esta clase de defecto solo es observable mediante
@@ -629,7 +631,7 @@ Para sistemas de autenticación con criptografía asimétrica, se recomienda: (1
 
     \item \textbf{Corrección aplicada para DEF-01:} \texttt{RegisterRequest} fue convertido de \textit{positional record} a \texttt{class} con dos capas de defensa: \texttt{required} (C\# 11) bloquea campos ausentes en deserialización STJ; \texttt{[Required]} + \texttt{[EmailAddress]} + \texttt{[StringLength]} bloquean valores inválidos en validación de modelo. \texttt{InvalidModelStateResponseFactory} unifica ambas rutas de error en el formato \texttt{ErrorResponse} propio de la API. BN-08 ahora retorna HTTP~400 con \texttt{VALIDATION\_FAILED}.
 
-    \item \textbf{Corrección recomendada para DEF-02:} Agregar \texttt{return} tras \texttt{ctx.Fail()} en \texttt{OnTokenValidated}, o mover el check de blacklist a un middleware inline entre \texttt{UseAuthentication()} y \texttt{UseAuthorization()} que inspeccione \texttt{HttpContext.User.FindFirstValue(Jti)} y retorne HTTP~401 directamente si el \texttt{jti} está revocado. Esta segunda opción es más robusta porque opera sobre el \texttt{ClaimsPrincipal} ya construido, independientemente del comportamiento interno del handler JWT.
+    \item \textbf{Corrección aplicada para DEF-02:} el check de blacklist fue removido de \texttt{OnTokenValidated} y reubicado en un middleware inline entre \texttt{UseAuthentication()} y \texttt{UseAuthorization()} en \texttt{Program.cs}. El middleware inspecciona \texttt{HttpContext.User} — ya construido por el handler JWT — y retorna HTTP~401 con \texttt{ErrorResponse("TOKEN\_REVOKED",~...)} si el \texttt{jti} está en la blacklist. BN-16 ahora retorna HTTP~401 correctamente.
 \end{enumerate}
 
 % ── REFERENCIAS ──────────────────────────────────────────────────────────────

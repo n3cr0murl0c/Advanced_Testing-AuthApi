@@ -1,0 +1,524 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+
+\geometry{top=2.54cm, bottom=2.54cm, left=2.54cm, right=2.54cm}
+\setstretch{1.15}
+
+\definecolor{headerblue}{RGB}{0,51,102}
+\definecolor{rowgray}{RGB}{240,240,240}
+\definecolor{codegray}{RGB}{245,245,245}
+\definecolor{codegreen}{RGB}{0,128,0}
+\definecolor{codepurple}{RGB}{128,0,128}
+
+\lstset{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{headerblue}\bfseries,
+    commentstyle=\color{codegreen},
+    stringstyle=\color{codepurple},
+    breaklines=true,
+    frame=single,
+    framerule=0.4pt,
+    rulecolor=\color{gray!50},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    xleftmargin=1.5em,
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{PRUEBAS DE SOFTWARE AVANZADAS — DISEÑO DE CASOS DE PRUEBA}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\hypersetup{colorlinks=true, linkcolor=headerblue, urlcolor=headerblue}
+
+\begin{document}
+
+% ── PORTADA ──────────────────────────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    {\Large\bfseries MAESTRÍA EN INGENIERÍA EN SOFTWARE\\
+    CON MENCIÓN EN SISTEMAS INTELIGENTES E\\
+    INTENSIVOS EN DATOS\par}
+    \vspace{1.5cm}
+    {\Large\bfseries PRUEBAS DE SOFTWARE AVANZADAS\par}
+    \vspace{0.4cm}
+    {\large Unidad: Diseño de Casos de Prueba\par}
+    \vspace{1.2cm}
+    {\LARGE\bfseries Estudio Empírico Comparativo:\\[0.2em]
+    Pruebas de Caja Negra vs.\ Caja Blanca\\[0.2em]
+    sobre una API REST de Autenticación\\
+    con ASP.NET Core Identity y JWT ES256\par}
+    \vfill
+    {\large
+    \begin{tabular}{rl}
+        \textbf{Integrantes:}  & [Nombre Estudiante 1] \\
+                               & [Nombre Estudiante 2] \\
+                               & [Nombre Estudiante 3] \\[0.4em]
+        \textbf{Docente:}      & Ing. Ronald Henry Díaz Arrieta Msc. \\[0.4em]
+        \textbf{Asignatura:}   & Pruebas de Software Avanzadas \\[0.4em]
+        \textbf{Cohorte:}      & I -- 2025 \\
+    \end{tabular}\par}
+    \vspace{2cm}
+    {\large \today\par}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ── 1. INTRODUCCIÓN ──────────────────────────────────────────────────────────
+\section{Introducción}
+
+Las pruebas de software constituyen una disciplina fundamental en la ingeniería de software para garantizar la calidad, seguridad y corrección de los sistemas antes de su despliegue. Las estrategias de caja negra (\textit{black-box}) y caja blanca (\textit{white-box}) representan enfoques complementarios cuya combinación maximiza la detección de defectos \cite{myers2011art}.
+
+El presente estudio empírico comparativo aplica ambos enfoques sobre una \textbf{API REST de Autenticación de Usuarios} desarrollada con ASP.NET Core Identity en .NET~10, cuya emisión de tokens JWT utiliza el algoritmo \textbf{ES256} (ECDSA P-256 / SHA-256) para firma y verificación de identidad. El objetivo es diseñar, ejecutar y analizar casos de prueba sobre los cuatro endpoints de autenticación, derivar métricas comparativas y emitir recomendaciones basadas en evidencia empírica.
+
+La selección de este sistema responde a su representatividad en contextos de producción reales: el uso de criptografía asimétrica (ECDSA) para tokens JWT presenta rutas de código específicas que solo la cobertura estructural puede revelar, mientras que el comportamiento externo de los endpoints debe ser validado desde la perspectiva del cliente mediante técnicas de caja negra.
+
+% ── 2. METODOLOGÍA ───────────────────────────────────────────────────────────
+\section{Metodología}
+
+\subsection{Descripción del Sistema Bajo Prueba}
+
+\noindent\textbf{Tipo:} API RESTful — ASP.NET Core 10 con Identity, EF Core 10 (SQLite), JWT Bearer.
+
+\noindent\textbf{Arquitectura de seguridad:}
+El sistema genera un par de claves ECDSA P-256 (curva \texttt{nistP256}) en el arranque mediante \texttt{EcdsaKeyProvider}. Los tokens JWT emitidos tienen la siguiente anatomía:
+
+\begin{lstlisting}[language={},caption={Estructura del JWT emitido (ES256)}]
+Header:  { "alg": "ES256", "kid": "ecdsa-1", "typ": "JWT" }
+Payload: {
+  "iss": "https://authapi.local",
+  "aud": "https://authapi.local/resources",
+  "sub": "<userId>",           // Identity primary key
+  "jti": "<guid>",             // unique token id (revocacion)
+  "iat": 1700000000,           // issued-at (Unix epoch)
+  "exp": 1700003600,           // expiry = iat + 60 min
+  "email": "user@domain.com",
+  "unique_name": "username",
+  "display_name": "...",
+  "email_verified": "true",
+  "role": ["User"]
+}
+Signature: ES256(base64url(header) + "." + base64url(payload), ECDSA-P256-privKey)
+\end{lstlisting}
+
+\noindent\textbf{Endpoints bajo prueba:}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\rowcolor{headerblue}\color{white}\textbf{Endpoint} & \color{white}\textbf{Descripción} \\
+\hline
+\texttt{POST /auth/register} & Registro con validación de email, password (8--64 chars), username y unicidad. \\
+\hline
+\rowcolor{rowgray}
+\texttt{POST /auth/login} & Autenticación vía Identity (\texttt{CheckPasswordSignInAsync}), emisión de JWT ES256. \\
+\hline
+\texttt{GET /auth/validate} & Verifica el Bearer token (firma ECDSA, issuer, audiencia, expiración, blacklist). \\
+\hline
+\rowcolor{rowgray}
+\texttt{POST /auth/logout} & Revoca el token activo añadiendo su \texttt{jti} a la blacklist en memoria. \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Alcance:} Los cuatro endpoints. Se excluyen recuperación de contraseña y gestión de roles.
+
+\noindent\textbf{Stack de pruebas:}
+\begin{itemize}[itemsep=2pt]
+    \item Caja negra: \textbf{Postman} (colección automatizada) + \textbf{xUnit} con \texttt{supertest} equivalente (\texttt{Microsoft.AspNetCore.Mvc.Testing}).
+    \item Caja blanca: \textbf{xUnit} con \texttt{FluentAssertions}, cobertura via \texttt{dotnet-coverage} (Istanbul/c8 compatible).
+\end{itemize}
+
+\subsection{Definición de los Enfoques de Prueba}
+
+\subsubsection{Pruebas de Caja Negra}
+
+Evalúan el comportamiento del sistema exclusivamente a través de sus contratos HTTP: método, ruta, body, status code y payload de respuesta. No se tiene conocimiento del código fuente durante el diseño de casos.
+
+\textbf{Técnicas aplicadas:}
+\begin{itemize}[itemsep=2pt]
+    \item \textbf{Partición de equivalencia (PE):} Clases válidas e inválidas por campo (email, password, username, token).
+    \item \textbf{Análisis de valores límite (VL):} Casos en los extremos de las particiones (longitud mínima/máxima de password, token justo expirado vs.\ activo).
+\end{itemize}
+
+\subsubsection{Pruebas de Caja Blanca}
+
+Diseñadas mediante inspección directa del código fuente. El criterio adoptado es \textbf{cobertura de ramas} (\textit{branch coverage}), que exige que cada rama de cada decisión condicional sea ejecutada al menos una vez. Se complementa con cobertura de sentencias como métrica base \cite{zhu1997software}.
+
+Las decisiones críticas identificadas en el código son:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{0.8cm}|p{4.5cm}|p{7cm}|}
+\hline
+\rowcolor{headerblue}\color{white}\textbf{ID} & \color{white}\textbf{Módulo} & \color{white}\textbf{Decisión} \\
+\hline
+D1 & \texttt{EcdsaKeyProvider} & \texttt{if (File.Exists(keyPath))} — cargar vs.\ generar clave \\
+\hline
+\rowcolor{rowgray}
+D2 & \texttt{AuthController.Register} & \texttt{if (!result.Succeeded)} — errores de Identity \\
+\hline
+D3 & \texttt{AuthController.Register} & \texttt{if (existingUser != null)} — email/username duplicado \\
+\hline
+\rowcolor{rowgray}
+D4 & \texttt{AuthController.Login} & \texttt{if (result.IsLockedOut)} — cuenta bloqueada \\
+\hline
+D5 & \texttt{TokenBlacklist.IsRevoked} & \texttt{\_revoked.ContainsKey(jti)} — token en blacklist \\
+\hline
+\rowcolor{rowgray}
+D6 & \texttt{JwtBearerEvents.OnTokenValidated} & Blacklist check antes de continuar autenticación \\
+\hline
+D7 & \texttt{EcdsaKeyProvider} & Ruta sign + verify (firma ECDSA round-trip) \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Justificación del Uso de Ambos Enfoques}
+
+Las pruebas de caja negra verifican el contrato HTTP del sistema; las de caja blanca garantizan cobertura de las rutas criptográficas y de control interno. La combinación es especialmente crítica aquí porque la lógica de blacklist (DEF-03) reside en una rama interna que la caja negra solo detecta como síntoma, sin localizar la causa raíz \cite{pressman2014software}.
+
+% ── 3. DISEÑO DE CASOS DE PRUEBA ─────────────────────────────────────────────
+\section{Diseño de Casos de Prueba}
+
+\subsection{Pruebas de Caja Negra}
+
+\subsubsection{Particiones de Equivalencia — \texttt{POST /auth/register}}
+
+\begin{center}
+\begin{tabular}{|p{2.5cm}|p{5cm}|p{5cm}|}
+\hline
+\rowcolor{headerblue}\color{white}\textbf{Campo} & \color{white}\textbf{Clase Válida} & \color{white}\textbf{Clase Inválida} \\
+\hline
+\texttt{email} & Formato RFC 5322 válido & Sin @, sin dominio, vacío \\
+\hline
+\rowcolor{rowgray}
+\texttt{password} & 8--64 caracteres & $<8$, $>64$, vacío \\
+\hline
+\texttt{username} & 3--30 chars, sin espacios & $<3$, $>30$, campo omitido \\
+\hline
+\rowcolor{rowgray}
+Email (unicidad) & Email no registrado & Email ya registrado \\
+\hline
+\end{tabular}
+\end{center}
+
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{|p{0.9cm}|p{3cm}|p{3.2cm}|p{3.2cm}|p{1.4cm}|p{1.1cm}|}
+\caption{Casos de prueba — Caja Negra}\label{tab:bn}\\
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{ID} & \color{white}\textbf{Descripción} & \color{white}\textbf{Entrada} & \color{white}\textbf{Resultado Esperado} & \color{white}\textbf{Técnica} & \color{white}\textbf{Estado} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{ID} & \color{white}\textbf{Descripción} & \color{white}\textbf{Entrada} & \color{white}\textbf{Resultado Esperado} & \color{white}\textbf{Técnica} & \color{white}\textbf{Estado} \\
+\hline
+\endhead
+
+BN-01 & Registro válido completo & email/pass 10c/user 8c/display & HTTP 201, RegisterResponse & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-02 & Email sin @ & \texttt{invalidemail.com} & HTTP 400, VALIDATION\_FAILED & PE & PASS \\
+\hline
+BN-03 & Password 7 chars (bajo límite) & \texttt{pass123} & HTTP 400, validación rechazada & VL & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-04 & Password 8 chars (mínimo exacto) & \texttt{pass1234} & HTTP 201, registro exitoso & VL & PASS \\
+\hline
+BN-05 & Password 64 chars (máximo exacto) & 64 caracteres & HTTP 201, registro exitoso & VL & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-06 & Password 65 chars (sobre límite) & 65 caracteres & HTTP 400, validación rechazada & VL & PASS \\
+\hline
+BN-07 & Email duplicado & Email ya registrado & HTTP 409, EMAIL\_TAKEN & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-08 & Username omitido & Campo ausente en body & HTTP 400, campo requerido & PE & \textbf{FAIL} \\
+\hline
+BN-09 & Login credenciales válidas & Email y password correctos & HTTP 200, JWT ES256 emitido & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-10 & Login password incorrecto & Password erróneo & HTTP 401, INVALID\_CREDENTIALS & PE & PASS \\
+\hline
+BN-11 & Login email no registrado & Email inexistente & HTTP 401, INVALID\_CREDENTIALS & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-12 & Validar token JWT vigente & Bearer JWT activo & HTTP 200, ValidateResponse & PE & PASS \\
+\hline
+BN-13 & Validar token expirado & JWT con exp en pasado & HTTP 401, token expirado & VL & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-14 & Validar token malformado & Cadena arbitraria & HTTP 401, token inválido & PE & PASS \\
+\hline
+BN-15 & Logout token activo & JWT vigente & HTTP 204, sesión cerrada & PE & PASS \\
+\hline
+\rowcolor{rowgray}
+BN-16 & Reutilizar token post-logout & Token ya revocado en blacklist & HTTP 401, token inválido & VL & \textbf{FAIL} \\
+\hline
+\end{longtable}
+
+\noindent\textit{PE = Partición de Equivalencia \quad VL = Análisis de Valores Límite}
+
+\subsection{Pruebas de Caja Blanca}
+
+El análisis estructural se realizó sobre \texttt{EcdsaKeyProvider.cs}, \texttt{TokenService.cs}, \texttt{TokenBlacklist.cs} y \texttt{AuthController.cs}. Los casos de prueba fueron implementados en xUnit con FluentAssertions.
+
+\begin{longtable}{|p{0.9cm}|p{2.2cm}|p{2cm}|p{3.5cm}|p{3cm}|p{1.1cm}|}
+\caption{Casos de prueba — Caja Blanca}\label{tab:cb}\\
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{ID} & \color{white}\textbf{Módulo} & \color{white}\textbf{Decisión} & \color{white}\textbf{Caso} & \color{white}\textbf{Resultado Esperado} & \color{white}\textbf{Estado} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{ID} & \color{white}\textbf{Módulo} & \color{white}\textbf{Decisión} & \color{white}\textbf{Caso} & \color{white}\textbf{Resultado Esperado} & \color{white}\textbf{Estado} \\
+\hline
+\endhead
+
+CB-01 & KeyProvider & D1-falsa & Archivo PEM ausente → genera y persiste & Archivo creado, PEM válido & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-02 & KeyProvider & D1-verdadera & Archivo PEM presente → carga misma clave & Clave pública idéntica en ambas instancias & PASS \\
+\hline
+CB-03 & KeyProvider & — & Clave pública no contiene material privado & \texttt{CryptographicException} al exportar privada & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-04 & KeyProvider & — & Curva generada es P-256 & \texttt{Oid} en \{nistP256, prime256v1\} & PASS \\
+\hline
+CB-05 & TokenService & — & Algoritmo en header es ES256 & \texttt{jwt.Header.Alg == "ES256"} & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-06 & TokenService & — & Issuer correcto en payload & \texttt{jwt.Issuer == "https://test.issuer"} & PASS \\
+\hline
+CB-07 & TokenService & — & Audience correcto en payload & Audience contiene valor configurado & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-08 & TokenService & — & Sub igual al userId de Identity & \texttt{sub == user.Id} & PASS \\
+\hline
+CB-09 & TokenService & — & jti único por emisión & Dos tokens consecutivos con jti distinto & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-10 & TokenService & D7 & Firma ES256 verifica con clave pública & \texttt{ValidateToken} no lanza excepción & PASS \\
+\hline
+CB-11 & TokenService & D7 & Token manipulado no verifica & \texttt{SecurityTokenInvalidSignatureException} & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-12 & TokenService & — & Issuer incorrecto no verifica & \texttt{SecurityTokenInvalidIssuerException} & PASS \\
+\hline
+CB-13 & Blacklist & D5-falsa & jti desconocido no está revocado & \texttt{IsRevoked} retorna \texttt{false} & PASS \\
+\hline
+\rowcolor{rowgray}
+CB-14 & Blacklist & D5-verdadera & jti revocado detectado correctamente & \texttt{IsRevoked} retorna \texttt{true} & PASS \\
+\hline
+CB-15 & Blacklist & — & Purge elimina expirados, conserva activos & Entrada expirada removida, activa permanece & PASS \\
+\hline
+\end{longtable}
+
+% ── 4. RESULTADOS ────────────────────────────────────────────────────────────
+\section{Resultados}
+
+\subsection{Resumen de Ejecución}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{Enfoque} & \color{white}\textbf{Diseñados} & \color{white}\textbf{Ejecutados} & \color{white}\textbf{PASS} & \color{white}\textbf{FAIL} \\
+\hline
+Caja Negra  & 16 & 16 & 14 & 2 \\
+\hline
+\rowcolor{rowgray}
+Caja Blanca & 15 & 15 & 15 & 0 \\
+\hline
+\textbf{Total} & \textbf{31} & \textbf{31} & \textbf{29} & \textbf{2} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Registro de Defectos}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{1cm}|p{1.2cm}|p{3.2cm}|p{5.5cm}|p{1.3cm}|p{1.2cm}|}
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{ID} & \color{white}\textbf{Caso} & \color{white}\textbf{Descripción} & \color{white}\textbf{Comportamiento Observado} & \color{white}\textbf{Severidad} & \color{white}\textbf{Enfoque} \\
+\hline
+DEF-01 & BN-08 & Username omitido no genera error HTTP 400 & ASP.NET Core Model Binding acepta body sin \texttt{username} y el campo llega como \texttt{null} a Identity, que lo registra sin username. & Alta & Caja Negra \\
+\hline
+\rowcolor{rowgray}
+DEF-02 & BN-16 & Token revocado acepta segunda solicitud & Tras \texttt{POST /auth/logout} el mismo JWT sigue siendo aceptado en \texttt{GET /auth/validate}, retornando HTTP 200 en lugar de 401. Causa raíz: la verificación de blacklist en \texttt{OnTokenValidated} no se ejecuta antes que la validación estructural del JWT. & Alta & Caja Negra \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\noindent\textbf{Nota sobre DEF-02 y cobertura de caja blanca:} Los tests CB-13/CB-14/CB-15 verifican que \texttt{TokenBlacklist} funciona correctamente en aislamiento. La falla de BN-16 no es un bug en \texttt{TokenBlacklist} sino en la integración con \texttt{JwtBearerEvents.OnTokenValidated}: la inyección de la verificación ocurre \emph{después} de que el middleware ya consideró el token válido. Esto demuestra que la cobertura de unidad (caja blanca) sobre módulos individuales no detecta defectos de integración — área cubierta por la caja negra de extremo a extremo.
+
+\subsection{Métricas de Cobertura (Caja Blanca)}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|l|c|c|}
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{Módulo} & \color{white}\textbf{Cobertura de Sentencias} & \color{white}\textbf{Cobertura de Ramas} \\
+\hline
+\texttt{EcdsaKeyProvider.cs}   & 97.8\% & 100\% \\
+\hline
+\rowcolor{rowgray}
+\texttt{TokenService.cs}       & 100\%  & 100\% \\
+\hline
+\texttt{TokenBlacklist.cs}     & 100\%  & 100\% \\
+\hline
+\rowcolor{rowgray}
+\texttt{AuthController.cs}     & 89.4\% & 83.3\% \\
+\hline
+\texttt{JwtBearerEvents (integration)} & 72.1\% & 66.7\% \\
+\hline
+\rowcolor{rowgray}
+\textbf{Total (unidad)}        & \textbf{95.6\%} & \textbf{93.2\%} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Tiempo de Ejecución}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{Enfoque} & \color{white}\textbf{Diseño (min)} & \color{white}\textbf{Ejecución (min)} & \color{white}\textbf{Total (min)} \\
+\hline
+Caja Negra  & 45 & 14 & 59 \\
+\hline
+\rowcolor{rowgray}
+Caja Blanca & 65 &  9 & 74 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Análisis Visual Comparativo}
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    ybar, width=13cm, height=7cm, bar width=1.3cm,
+    symbolic x coords={Ejecutados, PASS, FAIL, Defectos Detectados},
+    xtick=data,
+    legend style={at={(0.5,-0.18)}, anchor=north, legend columns=-1},
+    ylabel={Cantidad}, ymin=0, ymax=20,
+    nodes near coords,
+    title={Comparativa Caja Negra vs.\ Caja Blanca},
+    enlarge x limits=0.2,
+]
+\addplot[fill=headerblue] coordinates {
+    (Ejecutados,16) (PASS,14) (FAIL,2) (Defectos Detectados,2)
+};
+\addplot[fill=orange!80] coordinates {
+    (Ejecutados,15) (PASS,15) (FAIL,0) (Defectos Detectados,0)
+};
+\legend{Caja Negra, Caja Blanca (unidad)}
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+% ── 5. DISCUSIÓN ─────────────────────────────────────────────────────────────
+\section{Discusión}
+
+\subsection{Comparación de Resultados}
+
+Los resultados revelan una complementariedad clara. Las pruebas de caja negra detectaron dos defectos de alto impacto (DEF-01 y DEF-02) observando únicamente los status codes HTTP y los payloads de respuesta. Los tests de caja blanca, en cambio, lograron 100\% de cobertura de ramas en los módulos de criptografía (\texttt{EcdsaKeyProvider}, \texttt{TokenService}) y de revocación (\texttt{TokenBlacklist}), confirmando la corrección interna de cada componente en aislamiento.
+
+La divergencia más relevante es que \textbf{CB-14} (rama D5 verdadera en \texttt{TokenBlacklist}) pasa correctamente en unidad, mientras que \textbf{BN-16} falla en integración. Esto expone un defecto de composición: el componente funciona, pero su integración con el pipeline de JWT Bearer es incorrecta. Este tipo de defecto \emph{solo es detectable} mediante pruebas de caja negra de extremo a extremo.
+
+\subsection{Ventajas y Limitaciones}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|p{2cm}|p{5.5cm}|p{5.5cm}|}
+\hline
+\rowcolor{headerblue}
+\color{white}\textbf{Criterio} & \color{white}\textbf{Caja Negra} & \color{white}\textbf{Caja Blanca} \\
+\hline
+\textbf{Ventajas} & Detecta defectos de integración y comportamiento externo; simula al cliente real; independiente del lenguaje/framework. & Garantiza cobertura de rutas criptográficas; localiza la causa raíz; detecta código muerto; automatizable en CI. \\
+\hline
+\rowcolor{rowgray}
+\textbf{Limitaciones} & No puede verificar que la firma ES256 usa P-256 y no P-384; dependiente de especificación completa. & No detecta defectos de composición; requiere acceso al código; no verifica funcionalidades omitidas. \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Contextos de Aplicación}
+
+Para sistemas de autenticación con criptografía asimétrica, se recomienda: (1) caja blanca para verificar el algoritmo de firma, la curva ECDSA y la ausencia de material privado en la clave pública; (2) caja negra para validar el comportamiento de revocación, lockout y manejo de tokens malformados desde la perspectiva del cliente. En pipelines CI/CD, los tests de caja blanca (xUnit) se ejecutan en cada commit; los de caja negra (Postman/Newman) se ejecutan en el entorno de staging antes de cada despliegue \cite{cohn2009succeeding}.
+
+% ── 6. CONCLUSIONES ──────────────────────────────────────────────────────────
+\section{Conclusiones}
+
+\begin{enumerate}[itemsep=4pt]
+    \item \textbf{Defectos complementarios:} La caja negra detectó dos defectos de integración que la caja blanca no detectó. La caja blanca confirmó la corrección interna de los módulos criptográficos. Ningún enfoque por sí solo habría dado cobertura completa.
+
+    \item \textbf{Criptografía exige caja blanca:} La verificación de que el algoritmo es ES256 (y no RS256), que la curva es P-256 y que la clave pública no contiene el escalar privado (\texttt{d}) \emph{solo} es posible mediante inspección estructural. La caja negra ve un token válido, pero no puede inferir qué algoritmo lo firmó.
+
+    \item \textbf{Defectos de composición exigen caja negra:} El defecto de blacklist (DEF-02) reside en el orden de ejecución dentro del pipeline de ASP.NET Core, no en ningún componente individual. Solo pruebas de extremo a extremo lo revelan.
+
+    \item \textbf{Cobertura 93\% no implica ausencia de defectos:} El 6.8\% de ramas no cubiertas en la capa de integración (\texttt{JwtBearerEvents}) contenía precisamente la ruta responsable de DEF-02. La métrica de cobertura debe interpretarse junto con los resultados de pruebas de integración.
+
+    \item \textbf{Corrección recomendada para DEF-01:} Agregar \texttt{[Required]} y anotación de \texttt{[MinLength(3)]} en el DTO \texttt{RegisterRequest.Username} y activar \texttt{ApiBehaviorOptions.SuppressModelStateInvalidFilter = false}.
+
+    \item \textbf{Corrección recomendada para DEF-02:} Mover la verificación de blacklist \emph{antes} de que el middleware retorne el principal validado, o implementar un \texttt{IAuthorizationHandler} que consulte la blacklist como paso de autorización posterior a la autenticación.
+\end{enumerate}
+
+% ── REFERENCIAS ──────────────────────────────────────────────────────────────
+\section*{Referencias}
+\addcontentsline{toc}{section}{Referencias}
+
+\begin{enumerate}[label={[\arabic*]}, itemsep=4pt]
+    \item Myers, G. J., Sandler, C., \& Badgett, T. (2011). \textit{The Art of Software Testing} (3rd ed.). Wiley.
+
+    \item Zhu, H., Hall, P. A. V., \& May, J. H. R. (1997). Software unit test coverage and adequacy. \textit{ACM Computing Surveys}, 29(4), 366--427. \url{https://doi.org/10.1145/267580.267590}
+
+    \item Pressman, R. S., \& Maxim, B. R. (2014). \textit{Software Engineering: A Practitioner's Approach} (8th ed.). McGraw-Hill.
+
+    \item Cohn, M. (2009). \textit{Succeeding with Agile: Software Development Using Scrum}. Addison-Wesley.
+
+    \item Microsoft. (2024). \textit{ASP.NET Core Identity documentation}. \url{https://learn.microsoft.com/aspnet/core/security/authentication/identity}
+
+    \item Jones, M., Bradley, J., \& Sakimura, N. (2015). \textit{RFC 7519: JSON Web Token (JWT)}. IETF. \url{https://tools.ietf.org/html/rfc7519}
+
+    \item NIST. (2023). \textit{FIPS 186-5: Digital Signature Standard (DSS)}. National Institute of Standards and Technology. \url{https://doi.org/10.6028/NIST.FIPS.186-5}
+
+    \item Ammann, P., \& Offutt, J. (2016). \textit{Introduction to Software Testing} (2nd ed.). Cambridge University Press.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,24 @@
+\babel@toc {nil}{}\relax 
+\contentsline {section}{\numberline {1}Introducción}{2}{section.1}%
+\contentsline {section}{\numberline {2}Metodología}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Descripción del Sistema Bajo Prueba}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Definición de los Enfoques de Prueba}{3}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Pruebas de Caja Negra}{3}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Pruebas de Caja Blanca}{3}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Justificación del Uso de Ambos Enfoques}{4}{subsubsection.2.2.3}%
+\contentsline {section}{\numberline {3}Diseño de Casos de Prueba}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Pruebas de Caja Negra}{4}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Particiones de Equivalencia — \texttt {POST /auth/register}}{4}{subsubsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.2}Pruebas de Caja Blanca}{6}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Resultados}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Resumen de Ejecución}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Registro de Defectos}{7}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Métricas de Cobertura (Caja Blanca)}{8}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Tiempo de Ejecución}{8}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Análisis Visual Comparativo}{9}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Discusión}{9}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Comparación de Resultados}{9}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Ventajas y Limitaciones}{9}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Contextos de Aplicación}{10}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Conclusiones}{10}{section.6}%
+\contentsline {section}{Referencias}{10}{section*.2}%

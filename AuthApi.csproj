@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>AuthApi</RootNamespace>
+    <AssemblyName>AuthApi</AssemblyName>
+    <UserSecretsId>authapi-ecdsa-identity</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Identity + EF Core -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0-preview.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"              Version="10.0.0-preview.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools"               Version="10.0.0-preview.*" PrivateAssets="all" />
+
+    <!-- JWT Bearer Authentication -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"    Version="10.0.0-preview.*" />
+
+    <!-- OpenAPI / Scalar -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi"                     Version="10.0.0-preview.*" />
+    <PackageReference Include="Scalar.AspNetCore"                                Version="2.*" />
+  </ItemGroup>
+
+</Project>
